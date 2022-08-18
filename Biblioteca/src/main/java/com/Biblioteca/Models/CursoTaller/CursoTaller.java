@@ -44,7 +44,6 @@ public class CursoTaller implements Serializable {
     private Date fechaFin;
 
 
-
     @OneToOne(mappedBy = "cursoTaller")
     private Curso cursos;
 
