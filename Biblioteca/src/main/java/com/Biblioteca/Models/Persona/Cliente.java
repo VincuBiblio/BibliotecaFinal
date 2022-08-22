@@ -33,6 +33,8 @@ public class Cliente implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date fechaNacimiento;
 
+    private Long edad;
+
     private String estadoCivil;
 
     private String genero;

@@ -27,6 +27,8 @@ public class Persona implements Serializable {
 
     private String email;
 
+    private String telefono;
+
     @OneToOne(mappedBy = "persona")
     private Cliente clientes;
 
