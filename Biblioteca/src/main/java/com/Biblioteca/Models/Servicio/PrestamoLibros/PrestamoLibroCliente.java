@@ -23,9 +23,12 @@ public class PrestamoLibroCliente implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "fecha_entrega")
-    @Temporal(TemporalType.DATE)
-    private Date fechaEntrega;
+
+    private Long dia;
+
+    private Long mes;
+
+    private Long anio;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "id_cliente",referencedColumnName = "id")

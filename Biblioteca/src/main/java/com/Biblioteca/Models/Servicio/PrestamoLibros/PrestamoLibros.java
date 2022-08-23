@@ -23,7 +23,7 @@ public class PrestamoLibros implements Serializable {
 
     private String codigoLibro;
 
-    private boolean estado;
+    private Boolean estado;
 
 
     @OneToMany (targetEntity = PrestamoLibroCliente.class, mappedBy = "prestamo")
