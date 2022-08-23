@@ -21,6 +21,8 @@ public class Roles implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String descripcion;
+
     @OneToOne(mappedBy = "persona")
     private Usuario usuarios;
 }

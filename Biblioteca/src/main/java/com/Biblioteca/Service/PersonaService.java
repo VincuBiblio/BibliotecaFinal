@@ -86,11 +86,13 @@ public class PersonaService implements UserDetailsService {
                     Optional<Canton> canton = cantonRepository.findById(personaClienteRequest.getIdCanton());
                     Optional<Parroquia> parroquia = parroquiaRepository.findById(personaClienteRequest.getIdParroquia());
                     Optional<Provincia> provincia = provinciaRepository.findById(personaClienteRequest.getIdProvincia());
-                    return new PersonaClienteResponse(persona.getId(),persona.getCedula(),
+                    Optional<Barrio> barrio = barrioRepository.findById(personaClienteRequest.getIdBarrio());
+                    return new PersonaClienteResponse(persona.getId(),cliente.get().getId(),persona.getCedula(),
                             persona.getApellidos(), persona.getNombres(),cliente.get().getFechaNacimiento(),
-                            cliente.get().getEdad(),cliente.get().getGenero(), persona.getTelefono(), persona.getEmail(), cliente.get().getEstadoCivil(), cliente.get().isDiscapacidad(),
-                            personaClienteRequest.getBarrio(),parroquia.get().getParroquia(), canton.get().getCanton(), provincia.get().getProvincia());
+                            cliente.get().getEdad(),cliente.get().getGenero(), persona.getTelefono(), persona.getEmail(), cliente.get().getEstadoCivil(), cliente.get().getDiscapacidad(),
+                            barrio.get().getId(), barrio.get().getBarrio(), parroquia.get().getId(),parroquia.get().getParroquia(), canton.get().getId(),canton.get().getCanton(), provincia.get().getId(),provincia.get().getProvincia());
                 }else {
+
                     log.error("No se puedo guardar el cliente con cédula: {} y email: {}", personaClienteRequest.getCedula(), personaClienteRequest.getEmail());
                     throw new BadRequestException("No se pudo guardar el cliente");
                 }
@@ -357,7 +359,7 @@ public class PersonaService implements UserDetailsService {
             pcr.setTelefono(clienteRequest.getPersona().getTelefono());
             pcr.setEmail(clienteRequest.getPersona().getEmail());
             pcr.setEstadoCivil(clienteRequest.getEstadoCivil());
-            pcr.setDiscapacidad(clienteRequest.isDiscapacidad());
+            pcr.setDiscapacidad(clienteRequest.getDiscapacidad());
             pcr.setIdBarrio(clienteRequest.getUbicacion().getBarrio().getId());
             pcr.setBarrio(clienteRequest.getUbicacion().getBarrio().getBarrio());
             pcr.setIdParroquia(clienteRequest.getUbicacion().getParroquia().getId());
@@ -427,7 +429,7 @@ public class PersonaService implements UserDetailsService {
                 response.setTelefono(persona.get().getTelefono());
                 response.setEmail(persona.get().getEmail());
                 response.setEstadoCivil(cliente.get().getEstadoCivil());
-                response.setDiscapacidad(cliente.get().isDiscapacidad());
+                response.setDiscapacidad(cliente.get().getDiscapacidad());
                 response.setIdBarrio(cliente.get().getUbicacion().getBarrio().getId());
                 response.setBarrio(cliente.get().getUbicacion().getBarrio().getBarrio());
                 response.setIdParroquia(cliente.get().getUbicacion().getParroquia().getId());
