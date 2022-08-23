@@ -25,6 +25,8 @@ public class LibrosController {
         librosService.registroLibros(request);
         return new ResponseEntity(new Mensaje("Libro Creado"), HttpStatus.CREATED);
     }
+
+
     @PutMapping
     public ResponseEntity<?> update(@RequestBody PrestamoLibrosRequest request){
         librosService.updateLibro(request);
