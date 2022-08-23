@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @CrossOrigin(origins= {"http://localhost:4200"})
 @RestController
 @RequestMapping("/api/persona")
@@ -48,6 +50,19 @@ public class PersonaController {
         }
         return new ResponseEntity<>(personaResponse, HttpStatus.CREATED);
     }
+
+    @GetMapping("/allClientes")
+    public ResponseEntity<List<PersonaClienteResponse>> listAllClientes() {
+        List<PersonaClienteResponse> clientes = personaService.listAllClientes();
+        return new ResponseEntity<List<PersonaClienteResponse>>(clientes, HttpStatus.OK);
+    }
+
+    @GetMapping("/cliente/{cedula}")
+    public ResponseEntity<PersonaClienteResponse> listClienteByCedula(@PathVariable String cedula){
+        PersonaClienteResponse cliente = personaService.ClienteByCedula(cedula);
+        return new ResponseEntity<>(cliente, HttpStatus.OK);
+    }
+
 
 
     @PostMapping("/login")

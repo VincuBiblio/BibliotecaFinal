@@ -27,7 +27,9 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -175,8 +177,6 @@ public class PersonaService implements UserDetailsService {
         throw new BadRequestException("No existe el cliente");
 
         }
-
-
 
         public Long edad (Date fechaNacimiento){
         Period edadC = Period.between(LocalDate.of(fechaNacimiento.getYear(),fechaNacimiento.getMonth(), fechaNacimiento.getDay()), LocalDate.now());
@@ -337,11 +337,76 @@ public class PersonaService implements UserDetailsService {
     }
 
 
-
     private boolean getPersona(String cedula) {
         return personaRepository.existsByCedula(cedula);
     }
 
+
+    public List<PersonaClienteResponse> listAllClientes(){
+        List<Cliente> cliente = clienteRepository.findAll();
+        return cliente.stream().map(clienteRequest->{
+            PersonaClienteResponse pcr = new PersonaClienteResponse();
+            pcr.setId(clienteRequest.getPersona().getId());
+            pcr.setIdCliente(clienteRequest.getId());
+            pcr.setCedula(clienteRequest.getPersona().getCedula());
+            pcr.setNombres(clienteRequest.getPersona().getNombres());
+            pcr.setApellidos(clienteRequest.getPersona().getApellidos());
+            pcr.setFechaNacimiento(clienteRequest.getFechaNacimiento());
+            pcr.setEdad(clienteRequest.getEdad());
+            pcr.setGenero(clienteRequest.getGenero());
+            pcr.setTelefono(clienteRequest.getPersona().getTelefono());
+            pcr.setEmail(clienteRequest.getPersona().getEmail());
+            pcr.setEstadoCivil(clienteRequest.getEstadoCivil());
+            pcr.setDiscapacidad(clienteRequest.isDiscapacidad());
+            pcr.setIdBarrio(clienteRequest.getUbicacion().getBarrio().getId());
+            pcr.setBarrio(clienteRequest.getUbicacion().getBarrio().getBarrio());
+            pcr.setIdParroquia(clienteRequest.getUbicacion().getParroquia().getId());
+            pcr.setParroquia(clienteRequest.getUbicacion().getParroquia().getParroquia());
+            pcr.setIdCanton(clienteRequest.getUbicacion().getCanton().getId());
+            pcr.setCanton(clienteRequest.getUbicacion().getCanton().getCanton());
+            pcr.setIdProvincia(clienteRequest.getUbicacion().getProvincia().getId());
+            pcr.setProvincia(clienteRequest.getUbicacion().getProvincia().getProvincia());
+            return pcr;
+        }).collect(Collectors.toList());
+    }
+
+
+    public PersonaClienteResponse ClienteByCedula(String cedula){
+        PersonaClienteResponse response = new PersonaClienteResponse();
+        Optional<Persona> persona = personaRepository.findByCedula(cedula);
+        if(persona.isPresent()) {
+            Optional<Cliente> cliente = clienteRepository.findByPersona(persona.get());
+            if(cliente.isPresent()) {
+                response.setId(persona.get().getId());
+                response.setIdCliente(cliente.get().getId());
+                response.setCedula(persona.get().getCedula());
+                response.setNombres(persona.get().getNombres());
+                response.setApellidos(persona.get().getApellidos());
+                response.setFechaNacimiento(cliente.get().getFechaNacimiento());
+                response.setEdad(cliente.get().getEdad());
+                response.setGenero(cliente.get().getGenero());
+                response.setTelefono(persona.get().getTelefono());
+                response.setEmail(persona.get().getEmail());
+                response.setEstadoCivil(cliente.get().getEstadoCivil());
+                response.setDiscapacidad(cliente.get().isDiscapacidad());
+                response.setIdBarrio(cliente.get().getUbicacion().getBarrio().getId());
+                response.setBarrio(cliente.get().getUbicacion().getBarrio().getBarrio());
+                response.setIdParroquia(cliente.get().getUbicacion().getParroquia().getId());
+                response.setParroquia(cliente.get().getUbicacion().getParroquia().getParroquia());
+                response.setIdCanton(cliente.get().getUbicacion().getCanton().getId());
+                response.setCanton(cliente.get().getUbicacion().getCanton().getCanton());
+                response.setIdProvincia(cliente.get().getUbicacion().getProvincia().getId());
+                response.setProvincia(cliente.get().getUbicacion().getProvincia().getProvincia());
+                return response;
+            }else{
+                throw new BadRequestException("No existe un persona con cédula" +cedula);
+            }
+
+        }else{
+            throw new BadRequestException("No existe un cliente vinculado a esa persona");
+        }
+
+    }
 
     public PersonaUsuarioResponse login (UsuarioRequest usuarioRequest) throws Exception {
         Optional<Persona> optional = personaRepository.findByEmail(usuarioRequest.getEmail());
