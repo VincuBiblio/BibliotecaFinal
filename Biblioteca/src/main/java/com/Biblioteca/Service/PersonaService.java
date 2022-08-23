@@ -81,7 +81,8 @@ public class PersonaService implements UserDetailsService {
                 if(persona!=null){
                     guardarCliente(persona.getCedula(), personaClienteRequest.getFechaNacimiento(), personaClienteRequest.getEstadoCivil(),
                             personaClienteRequest.getGenero(), personaClienteRequest.getDiscapacidad(), personaClienteRequest.getIdBarrio(),
-                            personaClienteRequest.getIdCanton(), personaClienteRequest.getIdParroquia(), personaClienteRequest.getIdProvincia());
+                            personaClienteRequest.getIdCanton(), personaClienteRequest.getIdParroquia(), personaClienteRequest.getIdProvincia(),
+                            personaClienteRequest.getNombreResponsable(), personaClienteRequest.getTelefonoResponsbale());
                     Optional<Cliente> cliente = clienteRepository.findByPersona(persona);
                     Optional<Canton> canton = cantonRepository.findById(personaClienteRequest.getIdCanton());
                     Optional<Parroquia> parroquia = parroquiaRepository.findById(personaClienteRequest.getIdParroquia());
@@ -89,7 +90,7 @@ public class PersonaService implements UserDetailsService {
                     Optional<Barrio> barrio = barrioRepository.findById(personaClienteRequest.getIdBarrio());
                     return new PersonaClienteResponse(persona.getId(),cliente.get().getId(),persona.getCedula(),
                             persona.getApellidos(), persona.getNombres(),cliente.get().getFechaNacimiento(),
-                            cliente.get().getEdad(),cliente.get().getGenero(), persona.getTelefono(), persona.getEmail(), cliente.get().getEstadoCivil(), cliente.get().getDiscapacidad(),
+                            cliente.get().getEdad(),cliente.get().getGenero(), persona.getTelefono(), persona.getEmail(), cliente.get().getEstadoCivil(), cliente.get().getDiscapacidad(),cliente.get().getNombreResponsable(), cliente.get().getTelefonoResponsbale(),
                             barrio.get().getId(), barrio.get().getBarrio(), parroquia.get().getId(),parroquia.get().getParroquia(), canton.get().getId(),canton.get().getCanton(), provincia.get().getId(),provincia.get().getProvincia());
                 }else {
 
@@ -105,7 +106,7 @@ public class PersonaService implements UserDetailsService {
     }
 
 
-    private boolean guardarCliente (String cedula, Date fechaNa, String estado, String genero, Boolean discapacidad, Long idBarrio, Long idCanton, Long idParroquia, Long idProvincia ){
+    private boolean guardarCliente (String cedula, Date fechaNa, String estado, String genero, Boolean discapacidad, Long idBarrio, Long idCanton, Long idParroquia, Long idProvincia, String nombreResponsable, String telefonoResponsable ){
         Optional<Persona> optionalPersona = personaRepository.findByCedula(cedula);
         if(optionalPersona.isPresent()){
             Persona persona = optionalPersona.get();
@@ -117,6 +118,8 @@ public class PersonaService implements UserDetailsService {
             newCliente.setGenero(genero);
             newCliente.setDiscapacidad(discapacidad);
             newCliente.setUbicacion(guardarUbicacion(idBarrio, idCanton, idParroquia, idProvincia));
+            newCliente.setNombreResponsable(nombreResponsable);
+            newCliente.setTelefonoResponsbale(telefonoResponsable);
             newCliente.setPersona(persona);
             Cliente cliente = clienteRepository.save(newCliente);
             if(cliente!=null){
@@ -146,7 +149,8 @@ public class PersonaService implements UserDetailsService {
                 if(persona != null){
                     actualizarCliente(persona, personaClienteRequest.getFechaNacimiento(), personaClienteRequest.getEstadoCivil(),
                             personaClienteRequest.getGenero(), personaClienteRequest.getDiscapacidad(), personaClienteRequest.getIdBarrio(),
-                            personaClienteRequest.getIdCanton(), personaClienteRequest.getIdParroquia(), personaClienteRequest.getIdProvincia());
+                            personaClienteRequest.getIdCanton(), personaClienteRequest.getIdParroquia(), personaClienteRequest.getIdProvincia(), personaClienteRequest.getNombreResponsable(),
+                            personaClienteRequest.getTelefonoResponsbale());
 
                 }else {
                     throw new BadRequestException("No se actualizó la persona");
@@ -160,7 +164,7 @@ public class PersonaService implements UserDetailsService {
         return false;
     }
 
-    private boolean actualizarCliente (Persona persona, Date fechaNa, String estado, String genero, Boolean discapacidad, Long idBarrio, Long idCanton, Long idParroquia, Long idProvincia ){
+    private boolean actualizarCliente (Persona persona, Date fechaNa, String estado, String genero, Boolean discapacidad, Long idBarrio, Long idCanton, Long idParroquia, Long idProvincia, String nombreResponsable, String telefonoResponsable ){
         Optional<Cliente> optionalCliente = clienteRepository.findByPersona(persona);
         if(optionalCliente.isPresent()){
             optionalCliente.get().setFechaNacimiento(fechaNa);
@@ -168,6 +172,8 @@ public class PersonaService implements UserDetailsService {
             optionalCliente.get().setEdad(edad(fechaNa));
             optionalCliente.get().setGenero(genero);
             optionalCliente.get().setDiscapacidad(discapacidad);
+            optionalCliente.get().setNombreResponsable(nombreResponsable);
+            optionalCliente.get().setTelefonoResponsbale(telefonoResponsable);
             optionalCliente.get().setUbicacion(guardarUbicacion(idBarrio, idCanton, idParroquia, idProvincia));
             try{
                 Cliente cliente = clienteRepository.save(optionalCliente.get());
@@ -368,6 +374,8 @@ public class PersonaService implements UserDetailsService {
             pcr.setCanton(clienteRequest.getUbicacion().getCanton().getCanton());
             pcr.setIdProvincia(clienteRequest.getUbicacion().getProvincia().getId());
             pcr.setProvincia(clienteRequest.getUbicacion().getProvincia().getProvincia());
+            pcr.setNombreResponsable(clienteRequest.getNombreResponsable());
+            pcr.setTelefonoResponsbale(clienteRequest.getTelefonoResponsbale());
             return pcr;
         }).collect(Collectors.toList());
     }
@@ -384,6 +392,7 @@ public class PersonaService implements UserDetailsService {
             pcr.setTelefono(usuarioRequest.getPersona().getTelefono());
             pcr.setEmail(usuarioRequest.getPersona().getEmail());
             pcr.setIdRol(usuarioRequest.getRoles().getId());
+
             return pcr;
         }).collect(Collectors.toList());
     }
@@ -438,6 +447,8 @@ public class PersonaService implements UserDetailsService {
                 response.setCanton(cliente.get().getUbicacion().getCanton().getCanton());
                 response.setIdProvincia(cliente.get().getUbicacion().getProvincia().getId());
                 response.setProvincia(cliente.get().getUbicacion().getProvincia().getProvincia());
+                response.setNombreResponsable(cliente.get().getNombreResponsable());
+                response.setTelefonoResponsbale(cliente.get().getTelefonoResponsbale());
                 return response;
             }else{
                 throw new BadRequestException("No existe un persona con cédula" +cedula);

@@ -31,9 +31,10 @@ public class ComputoCliente implements Serializable {
         @JoinColumn(name = "id_cliente",referencedColumnName = "id")
         private Cliente cliente;
 
-        @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-        @JoinColumn(name = "id_centro",referencedColumnName = "id")
-        private CentroComputo centro;
+        private String descripcion;
 
+        @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+        @JoinColumn(name = "id_inventario",referencedColumnName = "id")
+        private InventarioComputo inventario;
 
 }

@@ -28,6 +28,9 @@ public class PersonaClienteRequest implements Serializable {
     private String estadoCivil;
 
     private Boolean discapacidad;
+    private String nombreResponsable;
+
+    private String telefonoResponsbale;
 
     private String barrio;
 

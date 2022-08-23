@@ -35,6 +35,10 @@ public class PersonaClienteResponse implements Serializable {
 
     private Boolean discapacidad;
 
+    private String nombreResponsable;
+
+    private String telefonoResponsbale;
+
     private Long idBarrio;
     private String barrio;
 

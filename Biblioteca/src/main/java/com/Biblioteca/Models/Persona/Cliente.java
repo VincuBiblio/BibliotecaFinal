@@ -41,6 +41,10 @@ public class Cliente implements Serializable {
 
     private Boolean discapacidad;
 
+    private String nombreResponsable;
+
+    private String telefonoResponsbale;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="persona_id", referencedColumnName = "id")
     private Persona persona;
