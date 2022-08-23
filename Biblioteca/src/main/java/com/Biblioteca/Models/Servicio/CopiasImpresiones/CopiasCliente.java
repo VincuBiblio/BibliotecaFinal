@@ -24,9 +24,8 @@ public class CopiasCliente implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "fecha_actual")
-    @Temporal(TemporalType.DATE)
-    private Date fechaActual;
+
+    private Long dia, mes, anio;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "id_cliente",referencedColumnName = "id")

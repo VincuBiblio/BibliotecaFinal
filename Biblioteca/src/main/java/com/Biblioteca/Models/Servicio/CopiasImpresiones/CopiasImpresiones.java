@@ -27,6 +27,8 @@ public class CopiasImpresiones implements Serializable {
 
     private Long pagColor;
 
+    private Long pagTotal;
+
     @OneToMany (targetEntity = CopiasCliente.class, mappedBy = "copias")
     private List<CopiasCliente> copiasCliente;
 
