@@ -10,6 +10,7 @@ public class PersonaUsuarioResponse implements Serializable {
 
     private Long id;
 
+    private Long idUsuario;
     private String cedula;
 
     private String apellidos;
@@ -36,5 +37,9 @@ public class PersonaUsuarioResponse implements Serializable {
         this.clave = clave;
         this.idRol = idRol;
         this.token = token;
+    }
+
+    public PersonaUsuarioResponse() {
+
     }
 }

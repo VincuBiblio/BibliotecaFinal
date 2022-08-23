@@ -370,6 +370,45 @@ public class PersonaService implements UserDetailsService {
         }).collect(Collectors.toList());
     }
 
+    public List<PersonaUsuarioResponse> listAllUsuarios(){
+        List<Usuario> usuarios = usuarioRepository.findAll();
+        return usuarios.stream().map(usuarioRequest->{
+            PersonaUsuarioResponse pcr = new PersonaUsuarioResponse();
+            pcr.setId(usuarioRequest.getPersona().getId());
+            pcr.setIdUsuario(usuarioRequest.getId());
+            pcr.setCedula(usuarioRequest.getPersona().getCedula());
+            pcr.setNombres(usuarioRequest.getPersona().getNombres());
+            pcr.setApellidos(usuarioRequest.getPersona().getApellidos());
+            pcr.setTelefono(usuarioRequest.getPersona().getTelefono());
+            pcr.setEmail(usuarioRequest.getPersona().getEmail());
+            pcr.setIdRol(usuarioRequest.getRoles().getId());
+            return pcr;
+        }).collect(Collectors.toList());
+    }
+
+    public PersonaUsuarioResponse usuarioByCedula(String cedula){
+        PersonaUsuarioResponse response = new PersonaUsuarioResponse();
+        Optional<Persona> persona = personaRepository.findByCedula(cedula);
+        if(persona.isPresent()) {
+            Optional<Usuario> user = usuarioRepository.findByPersona(persona.get());
+            if(user.isPresent()) {
+                response.setId(persona.get().getId());
+                response.setIdUsuario(user.get().getId());
+                response.setCedula(user.get().getPersona().getCedula());
+                response.setNombres(user.get().getPersona().getNombres());
+                response.setApellidos(user.get().getPersona().getApellidos());
+                response.setTelefono(user.get().getPersona().getTelefono());
+                response.setEmail(user.get().getPersona().getEmail());
+                response.setIdRol(user.get().getRoles().getId());
+                return response;
+            }else{
+                throw new BadRequestException("No existe un persona con cédula" +cedula);
+            }
+        }else{
+            throw new BadRequestException("No existe un cliente vinculado a esa persona");
+        }
+    }
+
 
     public PersonaClienteResponse ClienteByCedula(String cedula){
         PersonaClienteResponse response = new PersonaClienteResponse();

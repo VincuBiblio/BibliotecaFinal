@@ -63,7 +63,17 @@ public class PersonaController {
         return new ResponseEntity<>(cliente, HttpStatus.OK);
     }
 
+    @GetMapping("/allUsuarios")
+    public ResponseEntity<List<PersonaUsuarioResponse>> listAllUsuarios() {
+        List<PersonaUsuarioResponse> users = personaService.listAllUsuarios();
+        return new ResponseEntity<List<PersonaUsuarioResponse>>(users, HttpStatus.OK);
+    }
 
+    @GetMapping("/usuario/{cedula}")
+    public ResponseEntity<PersonaUsuarioResponse> listUsuarioByCedula(@PathVariable String cedula){
+        PersonaUsuarioResponse user = personaService.usuarioByCedula(cedula);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UsuarioRequest request) throws Exception {
