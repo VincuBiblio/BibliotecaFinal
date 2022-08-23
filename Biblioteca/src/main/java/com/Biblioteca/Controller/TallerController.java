@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 
-
     @CrossOrigin(origins= {"http://localhost:4200"})
     @RestController
     @RequestMapping("/api/taller")
@@ -27,10 +26,15 @@ import java.util.List;
             return new ResponseEntity<>(tallerService.registrarTaller(request), HttpStatus.OK);
         }
 
-        @PutMapping
+        @PutMapping("/updatebyidcursotaller")
         public ResponseEntity<?> updateTaller(@RequestBody TallerRequest tallerRequest) {
             tallerService.actualizartalleres(tallerRequest);
             return new ResponseEntity(new Mensaje("Taller Actualizado"), HttpStatus.OK);
+        }
+        @PutMapping("/actualizarbyidtaller")
+        public ResponseEntity<?> actualizartaller2(@RequestBody TallerRequest tallerRequest){
+            tallerService.actualizartallerconid_taller(tallerRequest);
+            return new ResponseEntity(new Mensaje("Taller Actualizado.."), HttpStatus.OK);
         }
 
         @GetMapping("/allTalleres")
@@ -39,9 +43,24 @@ import java.util.List;
             return new ResponseEntity<List<TallerResponse>>(taller, HttpStatus.OK);
         }
 
+        @GetMapping("/listartalleres/{id}")
+        public ResponseEntity<TallerResponse> listTallerbyidtaller(@PathVariable Long id){
+            TallerResponse taller = tallerService.listartallerbyIdTaller(id);
+            return new ResponseEntity<>(taller, HttpStatus.OK);
+        }
+
         @GetMapping("/allByfechaInicio/{fechaInicio}")
         public ResponseEntity<List<TallerFecha>> listAllTalleresfecha(@PathVariable("fechaInicio") @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaInicio){
-            List<TallerFecha> curso = tallerService.listaPorft(fechaInicio);
-            return new ResponseEntity<>(curso, HttpStatus.OK);
+            List<TallerFecha> taller = tallerService.listaPorft(fechaInicio);
+            return new ResponseEntity<>(taller, HttpStatus.OK);
+        }
+        @DeleteMapping("/{id}")
+        public ResponseEntity<?> deleteTaller(@PathVariable Long id){
+            tallerService.deletetallerById(id);
+            return  new ResponseEntity<>(new Mensaje("Taller eliminado"),HttpStatus.OK);
+        }
+        @PostMapping("/agregarclientetaller/{idCliente}/{idTaller}")
+        public ResponseEntity<?> agregarclienteataller(@PathVariable Long idCliente, @PathVariable Long idTaller){
+            return new ResponseEntity<>( tallerService.agregarClientesalTaller(idCliente,idTaller), HttpStatus.OK);
         }
     }

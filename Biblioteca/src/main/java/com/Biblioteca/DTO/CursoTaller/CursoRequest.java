@@ -8,6 +8,7 @@ import java.util.Date;
 @Data
 public class CursoRequest implements Serializable {
     private Long id;
+    private Long idCurso;
     private String nombre;
     private String lugar;
     private String descripcion;

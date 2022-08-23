@@ -26,10 +26,15 @@ public class CursoController {
     public ResponseEntity<?> registroCurso(@RequestBody CursoRequest request){
         return new ResponseEntity<>(cursoService.registrarCurso(request), HttpStatus.OK);
     }
-    @PutMapping
+    @PutMapping("/updatebyidcursotaller")
     public ResponseEntity<?> updateCurso(@RequestBody CursoRequest cursoRequest){
-        cursoService.actualizarcursos(cursoRequest);
+        cursoService.actualizarcursosconid_cursotaller(cursoRequest);
         return new ResponseEntity(new Mensaje("Curso Actualizado"), HttpStatus.OK);
+    }
+    @PutMapping("/updatebyidcurso")
+    public ResponseEntity<?> actualizarcurso2(@RequestBody CursoRequest cursoRequest){
+        cursoService.actualizarcursosconid_curso(cursoRequest);
+        return new ResponseEntity(new Mensaje("Curso Actualizado.."), HttpStatus.OK);
     }
 
     @GetMapping("/allCursos")
@@ -38,9 +43,15 @@ public class CursoController {
         return new ResponseEntity<List<CursoResponse>>(curso, HttpStatus.OK);
     }
 
-    @GetMapping("/list/{id}")
-    public ResponseEntity<CursoResponse> listCursobyId(@PathVariable Long id){
-        CursoResponse curso = cursoService.listarcursobyId(id);
+    @GetMapping("/listbycursotaller/{id}")
+    public ResponseEntity<CursoResponse> listCursobyIdcursotaller(@PathVariable Long id){
+        CursoResponse curso = cursoService.listarcursobyIdCursoTaller(id);
+        return new ResponseEntity<>(curso, HttpStatus.OK);
+    }
+
+    @GetMapping("/listarcursos/{id}")
+    public ResponseEntity<CursoResponse> listCursobyidcurso(@PathVariable Long id){
+        CursoResponse curso = cursoService.listarcursobyIdCurso(id);
         return new ResponseEntity<>(curso, HttpStatus.OK);
     }
 
@@ -54,5 +65,10 @@ public class CursoController {
     public ResponseEntity<?> deleteCurso(@PathVariable Long id){
         cursoService.deleteById(id);
         return  new ResponseEntity<>(new Mensaje("Curso eliminado"),HttpStatus.OK);
+    }
+
+    @PostMapping("/agregarcliente/{idCliente}/{idCurso}")
+    public ResponseEntity<?> agregar(@PathVariable Long idCliente, @PathVariable Long idCurso){
+        return new ResponseEntity<>( cursoService.agregarClientesalCurso(idCliente,idCurso), HttpStatus.OK);
     }
 }

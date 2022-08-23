@@ -1,5 +1,6 @@
 package com.Biblioteca.Repository.CursoTaller;
 
+import com.Biblioteca.Models.CursoTaller.Curso.Curso;
 import com.Biblioteca.Models.CursoTaller.CursoTaller;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,9 +12,14 @@ import java.util.Optional;
 
 public interface CursoTallerRepository extends JpaRepository<CursoTaller, Long> {
 
-    Optional<CursoTaller> findByNombre(String nombre);
-    Optional<CursoTaller> findByNombreAndFechaInicio(String nombre, Date fechaInicio);
-    Boolean existsByNombre(String nombre);
 
-    @Query("SELECT DISTINCT cc.actividades, cc.id FROM Curso cc JOIN cc.cursoTaller ct on cc.cursoTaller.id=ct.id where ct.fechaInicio IN (:fechaInicio)")
-    List<CursoTaller> findByFechaInicio(@Param("fechaInicio") Date fechaInicio);}
+    Optional<CursoTaller> findByNombre(String nombre);
+
+
+    Boolean existsByNombre(String nombre);
+    @Query(value = "SELECT * FROM curso_taller ct join curso cu on cu.curso_taller_id= ct.id where ct.nombre =:nombre and ct.fecha_inicio=:fechaInicio", nativeQuery = true)
+    Optional<CursoTaller> findByNombreAndFechaInicio(String nombre, Date fechaInicio);
+
+    @Query(value = "SELECT * FROM curso_taller ct join taller ta on ta.curso_taller_id= ct.id  where ct.nombre =:nombre and ct.fecha_inicio=:fechaInicio", nativeQuery = true)
+    Optional<CursoTaller> findDistinctByNombreAndFechaInicio(String nombre, Date fechaInicio);
+}

@@ -17,4 +17,6 @@ public interface TallerRepository extends JpaRepository<Taller,Long> {
             "FROM taller t, curso_taller ct \n" +
             "where ct.fecha_inicio IN (:fechaInicio) and ct.id = t.curso_taller_id", nativeQuery = true)
     List<TallerFecha> findDistinctByFechaInicio(Date fechaInicio);
+
+
 }

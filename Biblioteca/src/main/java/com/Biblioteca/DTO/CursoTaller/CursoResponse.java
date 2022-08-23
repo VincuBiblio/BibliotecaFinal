@@ -25,8 +25,9 @@ public class CursoResponse implements Serializable {
 
 
     ////crear curso
-    public CursoResponse(Long id, String nombre, String lugar, String descripcion, String observaciones, String responsable, Date fechaInicio, Date fechaFin, String actividades, String materiales, Long numParticipantes) {
+    public CursoResponse(Long id,Long idCurso, String nombre, String lugar, String descripcion, String observaciones, String responsable, Date fechaInicio, Date fechaFin, String actividades, String materiales, Long numParticipantes) {
     this.id=id;
+    this.idCurso=idCurso;
     this.nombre=nombre;
     this.lugar=lugar;
     this.descripcion=descripcion;
