@@ -7,6 +7,10 @@ import java.io.Serializable;
 @Data
 public class PersonaUsuarioRequest implements Serializable {
 
+    private Long id;
+
+
+
     private String cedula;
 
     private String apellidos;

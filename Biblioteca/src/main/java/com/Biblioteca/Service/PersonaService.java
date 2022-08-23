@@ -260,6 +260,32 @@ public class PersonaService implements UserDetailsService {
         }
     }
 
+
+    public boolean updateUsuario(PersonaUsuarioRequest personaUsuarioRequest){
+        Optional<Persona> optionalPersona = personaRepository.findById(personaUsuarioRequest.getId());
+        if(optionalPersona.isPresent()) {
+
+            optionalPersona.get().setCedula(personaUsuarioRequest.getCedula());
+            optionalPersona.get().setApellidos(personaUsuarioRequest.getApellidos());
+            optionalPersona.get().setNombres(personaUsuarioRequest.getNombres());
+            optionalPersona.get().setTelefono(personaUsuarioRequest.getTelefono());
+            optionalPersona.get().setEmail( personaUsuarioRequest.getEmail());
+            try{
+                Persona persona = personaRepository.save(optionalPersona.get());
+                if(persona != null){
+                   actualizarUsuario(persona, personaUsuarioRequest.getClave(), personaUsuarioRequest.getIdRol());
+
+                }else {
+                    throw new BadRequestException("No se actualizó la persona");
+                }
+            }catch (Exception ex) {
+                throw new BadRequestException("No se actualizó la persona" + ex);
+            }
+        }else{
+            throw new BadRequestException("No existe una persona con id" + personaUsuarioRequest.getId());
+        }
+        return false;
+    }
     private boolean guardarUsuario(String cedula,String clave,Long idRol){
         Optional<Persona> optionalPersona = personaRepository.findByCedula(cedula);
         if(optionalPersona.isPresent()){
@@ -285,6 +311,32 @@ public class PersonaService implements UserDetailsService {
             throw new BadRequestException("La cedula ingresada, no está registrada");
         }
     }
+    private boolean actualizarUsuario(Persona persona, String clave,Long idRol){
+        Optional<Usuario> optionalUsuario = usuarioRepository.findByPersona(persona);
+        if(optionalUsuario.isPresent()){
+            Optional<Roles> optionalRoles= rolesRepository.findById(idRol);
+            if(optionalRoles.isPresent()){
+
+                optionalUsuario.get().setClave(clave);
+                optionalUsuario.get().setPersona(persona);
+                optionalUsuario.get().setRoles(optionalRoles.get());
+
+                try{
+                    Usuario usuario = usuarioRepository.save(optionalUsuario.get());
+                    return true;
+                }catch (Exception ex) {
+                    throw new BadRequestException("No se actualizó tbl_usuario" + ex);
+                }
+            }else{
+                throw new BadRequestException("El rol seleccionado no existe");
+            }
+
+        }else{
+            throw new BadRequestException("La cedula ingresada, no está registrada");
+        }
+    }
+
+
 
     private boolean getPersona(String cedula) {
         return personaRepository.existsByCedula(cedula);
