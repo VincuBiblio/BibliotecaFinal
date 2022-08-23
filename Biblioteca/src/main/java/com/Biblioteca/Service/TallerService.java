@@ -172,7 +172,7 @@ public class TallerService {
             tr.setNombre(cRequest.getCursoTaller().getNombre());
             tr.setLugar(cRequest.getCursoTaller().getLugar());
             tr.setDescripcion(cRequest.getCursoTaller().getDescripcion());
-            tr.setObservaciones(cRequest.getCursoTaller().getDescripcion());
+            tr.setObservaciones(cRequest.getCursoTaller().getObservaciones());
             tr.setResponsable(cRequest.getCursoTaller().getResponsable());
             tr.setFechaInicio(cRequest.getCursoTaller().getFechaInicio());
             tr.setFechaFin(cRequest.getCursoTaller().getFechaFin());
