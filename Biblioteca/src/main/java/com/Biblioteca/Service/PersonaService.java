@@ -88,19 +88,14 @@ public class PersonaService implements UserDetailsService {
                             persona.getApellidos(), persona.getNombres(),cliente.get().getFechaNacimiento(),
                             cliente.get().getEdad(),cliente.get().getGenero(), persona.getTelefono(), persona.getEmail(), cliente.get().getEstadoCivil(), cliente.get().isDiscapacidad(),
                             personaClienteRequest.getBarrio(),parroquia.get().getParroquia(), canton.get().getCanton(), provincia.get().getProvincia());
-
                 }else {
                     log.error("No se puedo guardar el cliente con cédula: {} y email: {}", personaClienteRequest.getCedula(), personaClienteRequest.getEmail());
                     throw new BadRequestException("No se pudo guardar el cliente");
                 }
-
-
             }else {
-                //log.error("La cédula ya está registrada: {}", personaClienteRequest.getCedula());
                 throw new BadRequestException("El email ingresado, ya esta registrado");
             }
         }else {
-            //log.error("La cédula ya está registrada: {}", personaClienteRequest.getCedula());
             throw new BadRequestException("La cédula ingresada, ya está registrada");
         }
     }
@@ -133,7 +128,57 @@ public class PersonaService implements UserDetailsService {
 
     }
 
-    public Long edad (Date fechaNacimiento){
+    public boolean updateCliente(PersonaClienteRequest personaClienteRequest){
+        Optional<Persona> optionalPersona = personaRepository.findById(personaClienteRequest.getId());
+        if(optionalPersona.isPresent()) {
+
+            optionalPersona.get().setCedula(personaClienteRequest.getCedula());
+            optionalPersona.get().setApellidos(personaClienteRequest.getApellidos());
+            optionalPersona.get().setNombres(personaClienteRequest.getNombres());
+            optionalPersona.get().setTelefono(personaClienteRequest.getTelefono());
+            optionalPersona.get().setEmail( personaClienteRequest.getEmail());
+            try{
+                Persona persona = personaRepository.save(optionalPersona.get());
+                if(persona != null){
+                    actualizarCliente(persona, personaClienteRequest.getFechaNacimiento(), personaClienteRequest.getEstadoCivil(),
+                            personaClienteRequest.getGenero(), personaClienteRequest.getDiscapacidad(), personaClienteRequest.getIdBarrio(),
+                            personaClienteRequest.getIdCanton(), personaClienteRequest.getIdParroquia(), personaClienteRequest.getIdProvincia());
+
+                }else {
+                    throw new BadRequestException("No se actualizó la persona");
+                }
+            }catch (Exception ex) {
+                throw new BadRequestException("No se actualizó la persona" + ex);
+            }
+        }else{
+            throw new BadRequestException("No existe una persona con id" + personaClienteRequest.getId());
+        }
+        return false;
+    }
+
+    private boolean actualizarCliente (Persona persona, Date fechaNa, String estado, String genero, Boolean discapacidad, Long idBarrio, Long idCanton, Long idParroquia, Long idProvincia ){
+        Optional<Cliente> optionalCliente = clienteRepository.findByPersona(persona);
+        if(optionalCliente.isPresent()){
+            optionalCliente.get().setFechaNacimiento(fechaNa);
+            optionalCliente.get().setEstadoCivil(estado);
+            optionalCliente.get().setEdad(edad(fechaNa));
+            optionalCliente.get().setGenero(genero);
+            optionalCliente.get().setDiscapacidad(discapacidad);
+            optionalCliente.get().setUbicacion(guardarUbicacion(idBarrio, idCanton, idParroquia, idProvincia));
+            try{
+                Cliente cliente = clienteRepository.save(optionalCliente.get());
+                return true;
+            }catch (Exception ex) {
+                throw new BadRequestException("No se actualizó tbl_cliente" + ex);
+            }
+        }
+        throw new BadRequestException("No existe el cliente");
+
+        }
+
+
+
+        public Long edad (Date fechaNacimiento){
         Period edadC = Period.between(LocalDate.of(fechaNacimiento.getYear(),fechaNacimiento.getMonth(), fechaNacimiento.getDay()), LocalDate.now());
         int años =edadC.getYears()-1900;
         System.out.println("AÑOS"+años);
