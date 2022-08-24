@@ -1,9 +1,8 @@
 package com.Biblioteca.Models.Persona;
 
 
-import com.Biblioteca.Models.Documentos.Documentos;
+
 import com.Biblioteca.Models.Evento.Evento;
-import com.Biblioteca.Models.Informes.Informes;
 import com.Biblioteca.Models.Roles.Roles;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,13 +34,11 @@ public class Usuario implements Serializable {
     @JoinColumn(name="rol_id", referencedColumnName = "id")
     private Roles roles;
 
-    @OneToOne(mappedBy = "usuario")
-    private Informes informes;
+
 
     @OneToOne(mappedBy = "usuario")
     private Evento evento;
 
-    @OneToOne(mappedBy = "usuario")
-    private Documentos documento;
+
 
 }
