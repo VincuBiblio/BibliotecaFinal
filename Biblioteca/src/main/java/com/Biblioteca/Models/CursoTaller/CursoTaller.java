@@ -43,6 +43,9 @@ public class CursoTaller implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date fechaFin;
 
+    @Column(name = "fecha_maxinscripcion")
+    @Temporal(TemporalType.DATE)
+    private Date fechaMaxInscripcion;
 
     @OneToOne(mappedBy = "cursoTaller")
     private Curso cursos;

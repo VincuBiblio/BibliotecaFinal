@@ -15,6 +15,7 @@ public class TallerRequest implements Serializable {
     private String observaciones;
     private String responsable;
     private Date fechaInicio;
+    private Date fechaMaxInscripcion;
     private Date fechaFin;
 
 }

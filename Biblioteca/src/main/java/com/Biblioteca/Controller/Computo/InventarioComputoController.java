@@ -28,12 +28,12 @@ public class InventarioComputoController {
     @Autowired
     private ComputoClienteService computoClienteService;
 
-    @PostMapping()
+    @PostMapping("/registrocomputador")
     public ResponseEntity<?> registroComputador(@RequestBody InventarioRequest request){
         return new ResponseEntity<>(service.registrarInventario(request), HttpStatus.OK);
     }
 
-    @PutMapping()
+    @PutMapping("/actualizarcomputador")
     public ResponseEntity<?> actualizarComputador(@RequestBody InventarioRequest request){
         return new ResponseEntity<>(service.actualizarInventario(request), HttpStatus.OK);
     }
@@ -59,7 +59,7 @@ public class InventarioComputoController {
     }
 
 
-    @PostMapping()
+    @PostMapping("/registrocomputadorcliente")
     public ResponseEntity<?> registroComputadorCliente(@RequestBody ComputoClienteRequest request){
         return new ResponseEntity<>(computoClienteService.registroComputoCliente(request), HttpStatus.OK);
     }

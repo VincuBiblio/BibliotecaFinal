@@ -41,6 +41,7 @@ public class TallerService {
             newcursoTaller.setObservaciones(tallerRequest.getObservaciones());
             newcursoTaller.setResponsable(tallerRequest.getResponsable());
             newcursoTaller.setFechaInicio(tallerRequest.getFechaInicio());
+            newcursoTaller.setFechaMaxInscripcion(tallerRequest.getFechaMaxInscripcion());
             newcursoTaller.setFechaFin(tallerRequest.getFechaFin());
 
             CursoTaller cursoTaller = cursotallerRepository.save(newcursoTaller);
@@ -50,7 +51,7 @@ public class TallerService {
 
                 return new TallerResponse(cursoTaller.getId(),taller.get().getId(), cursoTaller.getNombre(), cursoTaller.getLugar(),
                         cursoTaller.getDescripcion(), cursoTaller.getObservaciones(), cursoTaller.getResponsable(),
-                        cursoTaller.getFechaInicio(), cursoTaller.getFechaFin());
+                        cursoTaller.getFechaInicio(),cursoTaller.getFechaMaxInscripcion(), cursoTaller.getFechaFin());
             } else {
                 throw new BadRequestException("No se pudo guardar el taller" + cursoTaller.getNombre());
             }
@@ -87,6 +88,7 @@ public class TallerService {
             optionalc.get().setObservaciones(tallerrequest.getObservaciones());
             optionalc.get().setResponsable(tallerrequest.getResponsable());
             optionalc.get().setFechaInicio(tallerrequest.getFechaInicio());
+            optionalc.get().setFechaMaxInscripcion(tallerrequest.getFechaMaxInscripcion());
             optionalc.get().setFechaFin(tallerrequest.getFechaFin());
             try {
                 CursoTaller ct = cursotallerRepository.save(optionalc.get());
@@ -127,7 +129,7 @@ public class TallerService {
                 if (c != null) {
                     guardaractualizaciontalleres(c.getCursoTaller().getId(), tallerrequest.getNombre(), tallerrequest.getLugar(),
                             tallerrequest.getDescripcion(),tallerrequest.getObservaciones(),tallerrequest.getResponsable(),
-                            tallerrequest.getFechaInicio(),tallerrequest.getFechaFin());
+                            tallerrequest.getFechaInicio(),tallerrequest.getFechaMaxInscripcion(),tallerrequest.getFechaFin());
                 } else {
                     throw new BadRequestException("NO SE ACTUALIZO EL TALLER");
                 }
@@ -142,7 +144,7 @@ public class TallerService {
 
 
     private boolean guardaractualizaciontalleres(Long idCursotaller, String nombre, String lugar,String descripcion,String observaciones,
-                                          String responsable, Date fechaInicio, Date fechaFin) {
+                                          String responsable, Date fechaInicio,Date fechaMax, Date fechaFin) {
         Optional<CursoTaller> optionalc = cursotallerRepository.findById(idCursotaller);
         if (optionalc.isPresent()) {
             optionalc.get().setNombre(nombre);
@@ -151,6 +153,7 @@ public class TallerService {
             optionalc.get().setObservaciones(observaciones);
             optionalc.get().setResponsable(responsable);
             optionalc.get().setFechaInicio(fechaInicio);
+            optionalc.get().setFechaMaxInscripcion(fechaMax);
             optionalc.get().setFechaFin(fechaFin);
             try {
                 CursoTaller c = cursotallerRepository.save(optionalc.get());
@@ -175,6 +178,7 @@ public class TallerService {
             tr.setObservaciones(cRequest.getCursoTaller().getObservaciones());
             tr.setResponsable(cRequest.getCursoTaller().getResponsable());
             tr.setFechaInicio(cRequest.getCursoTaller().getFechaInicio());
+            tr.setFechaMaxInscripcion(cRequest.getCursoTaller().getFechaMaxInscripcion());
             tr.setFechaFin(cRequest.getCursoTaller().getFechaFin());
             tr.setIdTaller(cRequest.getId());
             return tr;
@@ -195,6 +199,7 @@ public class TallerService {
                 cr.setObservaciones(cursotaller.get().getDescripcion());
                 cr.setResponsable(cursotaller.get().getResponsable());
                 cr.setFechaInicio(cursotaller.get().getFechaInicio());
+                cr.setFechaMaxInscripcion(cursotaller.get().getFechaMaxInscripcion());
                 cr.setFechaFin(cursotaller.get().getFechaFin());
                 cr.setIdTaller(taller.get().getId());
                 return cr;

@@ -17,6 +17,7 @@ public class CursoResponse implements Serializable {
     private String observaciones;
     private String responsable;
     private Date fechaInicio;
+    private Date fechaMaxInscripcion;
     private Date fechaFin;
     private String materiales;
     private String actividades;
@@ -25,7 +26,7 @@ public class CursoResponse implements Serializable {
 
 
     ////crear curso
-    public CursoResponse(Long id,Long idCurso, String nombre, String lugar, String descripcion, String observaciones, String responsable, Date fechaInicio, Date fechaFin, String actividades, String materiales, Long numParticipantes) {
+    public CursoResponse(Long id,Long idCurso, String nombre, String lugar, String descripcion, String observaciones, String responsable, Date fechaInicio,  Date fechaMaxInscripcion, Date fechaFin, String actividades, String materiales, Long numParticipantes) {
     this.id=id;
     this.idCurso=idCurso;
     this.nombre=nombre;
@@ -34,6 +35,7 @@ public class CursoResponse implements Serializable {
     this.observaciones=observaciones;
     this.responsable=responsable;
     this.fechaInicio=fechaInicio;
+    this.fechaMaxInscripcion=fechaMaxInscripcion;
     this.fechaFin=fechaFin;
     this.materiales=materiales;
     this.actividades=actividades;

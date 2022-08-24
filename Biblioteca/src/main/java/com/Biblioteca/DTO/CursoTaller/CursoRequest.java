@@ -2,6 +2,9 @@ package com.Biblioteca.DTO.CursoTaller;
 
 import lombok.Data;
 
+import javax.persistence.Column;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -15,6 +18,7 @@ public class CursoRequest implements Serializable {
     private String observaciones;
     private String responsable;
     private Date fechaInicio;
+    private Date fechaMaxInscripcion;
     private Date fechaFin;
     private String materiales;
     private Long numParticipantes;

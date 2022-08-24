@@ -19,6 +19,14 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.math.BigInteger;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +43,9 @@ public class CursoService {
     @Autowired
     private ClienteRepository clienteRepository;
 
+    @Autowired
+    private FechaService fechaService;
+
     @Transactional
     public CursoResponse registrarCurso(CursoRequest cursoRequest) {
         Optional<CursoTaller> optional1 = cursotallerRepository.findByNombreAndFechaInicio(cursoRequest.getNombre(), cursoRequest.getFechaInicio());
@@ -46,6 +57,7 @@ public class CursoService {
             newcursoTaller.setObservaciones(cursoRequest.getObservaciones());
             newcursoTaller.setResponsable(cursoRequest.getResponsable());
             newcursoTaller.setFechaInicio(cursoRequest.getFechaInicio());
+            newcursoTaller.setFechaMaxInscripcion(cursoRequest.getFechaMaxInscripcion());
             newcursoTaller.setFechaFin(cursoRequest.getFechaFin());
 
             CursoTaller cursoTaller = cursotallerRepository.save(newcursoTaller);
@@ -55,7 +67,7 @@ public class CursoService {
 
                 return new CursoResponse(cursoTaller.getId(), curso.get().getId(), cursoTaller.getNombre(), cursoTaller.getLugar(),
                         cursoTaller.getDescripcion(), cursoTaller.getObservaciones(), cursoTaller.getResponsable(),
-                        cursoTaller.getFechaInicio(), cursoTaller.getFechaFin(), curso.get().getActividades(),
+                        cursoTaller.getFechaInicio(), cursoTaller.getFechaMaxInscripcion(), cursoTaller.getFechaFin(), curso.get().getActividades(),
                         curso.get().getMateriales(), curso.get().getNumParticipantes());
             } else {
                 throw new BadRequestException("No se pudo guardar el curso" + cursoTaller.getNombre());
@@ -96,6 +108,7 @@ public class CursoService {
             optionalc.get().setObservaciones(cursorequest.getObservaciones());
             optionalc.get().setResponsable(cursorequest.getResponsable());
             optionalc.get().setFechaInicio(cursorequest.getFechaInicio());
+            optionalc.get().setFechaMaxInscripcion(cursorequest.getFechaMaxInscripcion());
             optionalc.get().setFechaFin(cursorequest.getFechaFin());
             try {
                 CursoTaller ct = cursotallerRepository.save(optionalc.get());
@@ -141,8 +154,8 @@ public class CursoService {
                 Curso c = cursoRepository.save(optionalc.get());
                 if (c != null) {
                     guardaractualizacion2(c.getCursoTaller().getId(), cursorequest.getNombre(), cursorequest.getLugar(),
-                            cursorequest.getDescripcion(),cursorequest.getObservaciones(),cursorequest.getResponsable(),
-                            cursorequest.getFechaInicio(),cursorequest.getFechaFin());
+                            cursorequest.getDescripcion(), cursorequest.getObservaciones(), cursorequest.getResponsable(),
+                            cursorequest.getFechaInicio(), cursorequest.getFechaMaxInscripcion(), cursorequest.getFechaFin());
                 } else {
                     throw new BadRequestException("NO SE ACTUALIZO EL CURSO");
                 }
@@ -156,8 +169,8 @@ public class CursoService {
     }
 
 
-    private boolean guardaractualizacion2(Long idCursotaller, String nombre, String lugar,String descripcion,String observaciones,
-                                          String responsable, Date fechaInicio, Date fechaFin) {
+    private boolean guardaractualizacion2(Long idCursotaller, String nombre, String lugar, String descripcion, String observaciones,
+                                          String responsable, Date fechaInicio, Date fechaMax, Date fechaFin) {
         Optional<CursoTaller> optionalc = cursotallerRepository.findById(idCursotaller);
         if (optionalc.isPresent()) {
             optionalc.get().setNombre(nombre);
@@ -166,6 +179,7 @@ public class CursoService {
             optionalc.get().setObservaciones(observaciones);
             optionalc.get().setResponsable(responsable);
             optionalc.get().setFechaInicio(fechaInicio);
+            optionalc.get().setFechaMaxInscripcion(fechaMax);
             optionalc.get().setFechaFin(fechaFin);
             try {
                 CursoTaller c = cursotallerRepository.save(optionalc.get());
@@ -187,9 +201,10 @@ public class CursoService {
             cr.setNombre(cRequest.getCursoTaller().getNombre());
             cr.setLugar(cRequest.getCursoTaller().getLugar());
             cr.setDescripcion(cRequest.getCursoTaller().getDescripcion());
-            cr.setObservaciones(cRequest.getCursoTaller().getDescripcion());
+            cr.setObservaciones(cRequest.getCursoTaller().getObservaciones());
             cr.setResponsable(cRequest.getCursoTaller().getResponsable());
             cr.setFechaInicio(cRequest.getCursoTaller().getFechaInicio());
+            cr.setFechaMaxInscripcion(cRequest.getCursoTaller().getFechaMaxInscripcion());
             cr.setFechaFin(cRequest.getCursoTaller().getFechaFin());
             cr.setIdCurso(cRequest.getId());
             cr.setActividades(cRequest.getActividades());
@@ -198,6 +213,7 @@ public class CursoService {
             return cr;
         }).collect(Collectors.toList());
     }
+
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public CursoResponse listarcursobyIdCursoTaller(Long id) {
         CursoResponse cr = new CursoResponse();
@@ -209,9 +225,10 @@ public class CursoService {
                 cr.setNombre(ct.get().getNombre());
                 cr.setLugar(ct.get().getLugar());
                 cr.setDescripcion(ct.get().getDescripcion());
-                cr.setObservaciones(ct.get().getDescripcion());
+                cr.setObservaciones(ct.get().getObservaciones());
                 cr.setResponsable(ct.get().getResponsable());
                 cr.setFechaInicio(ct.get().getFechaInicio());
+                cr.setFechaMaxInscripcion(ct.get().getFechaMaxInscripcion());
                 cr.setFechaFin(ct.get().getFechaFin());
                 cr.setIdCurso(curso.get().getId());
                 cr.setActividades(curso.get().getActividades());
@@ -219,7 +236,7 @@ public class CursoService {
                 cr.setNumParticipantes(curso.get().getNumParticipantes());
                 return cr;
             } else {
-                throw new BadRequestException("NO EXISTE EL  ID " + id+ "EN LA TABLA CURSO/TALLER");
+                throw new BadRequestException("NO EXISTE EL  ID " + id + "EN LA TABLA CURSO/TALLER");
             }
         } else {
             throw new BadRequestException("NO EXISTE UN CURSO DESDE LA TABLA CURSO/TALLER");
@@ -237,9 +254,10 @@ public class CursoService {
                 cr.setNombre(cursotaller.get().getNombre());
                 cr.setLugar(cursotaller.get().getLugar());
                 cr.setDescripcion(cursotaller.get().getDescripcion());
-                cr.setObservaciones(cursotaller.get().getDescripcion());
+                cr.setObservaciones(cursotaller.get().getObservaciones());
                 cr.setResponsable(cursotaller.get().getResponsable());
                 cr.setFechaInicio(cursotaller.get().getFechaInicio());
+                cr.setFechaMaxInscripcion(cursotaller.get().getFechaMaxInscripcion());
                 cr.setFechaFin(cursotaller.get().getFechaFin());
                 cr.setIdCurso(curso.get().getId());
                 cr.setActividades(curso.get().getActividades());
@@ -253,51 +271,52 @@ public class CursoService {
             throw new BadRequestException("NO EXISTE EL CURSO CON ID " + id);
         }
     }
+
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
-    public List<CursoFecha> listaPorff(Date fechaInicio){
+    public List<CursoFecha> listaPorff(Date fechaInicio) {
         return cursoRepository.findByFechaInicio(fechaInicio);
     }
 
-    public void deleteById(Long id){
+    public void deleteById(Long id) {
         Optional<Curso> optional = cursoRepository.findById(id);
-        if(optional.isPresent()){
+        if (optional.isPresent()) {
             cursoRepository.deleteById(id);
-        }else {
+        } else {
             throw new BadRequestException("El curso con el id " + id + ", no existe");
-      }
+        }
     }
 
 
-
     @Transactional
-    public boolean agregarClientesalCurso(Long idCliente, Long idCurso){
+    public boolean agregarClientesalCurso(Long idCliente, Long idCurso) {
         Optional<Cliente> cliente = clienteRepository.findById(idCliente);
-        if(cliente.isPresent()) {
+        if (cliente.isPresent()) {
             Optional<Curso> curso = cursoRepository.findById(idCurso);
-            if(curso.isPresent()) {
+            if (curso.isPresent()) {
 
-                    BigInteger numerodeparticipantes;
-                    numerodeparticipantes=count1(idCurso);
-                    System.out.println(numerodeparticipantes+"maximo de participantes");
-                    if (curso.get().getNumParticipantes()>=numerodeparticipantes.longValue()){
-                      try{
+                BigInteger numerodeparticipantes;
+                numerodeparticipantes = count1(idCurso);
+                System.out.println(numerodeparticipantes + "maximo de participantes");
+                if (curso.get().getNumParticipantes() >= numerodeparticipantes.longValue()) {
+                    try {
                         cliente.get().getCursos().add(curso.get());
                         clienteRepository.save(cliente.get());
                         return true;
 
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         throw new BadRequestException("no cumple el numero maximo de participantes");
                     }
-                    }else {
-                        throw new BadRequestException("SE ALCANZO EL NUMERO MAXIMO DE "+curso.get().getNumParticipantes()+" PARTICIPANTES");
-                    }
-            }else{
-                throw new BadRequestException("NO EXISTE EL CURSO CON ID: " +idCurso);
+                } else {
+                    throw new BadRequestException("SE ALCANZO EL NUMERO MAXIMO DE " + curso.get().getNumParticipantes() + " PARTICIPANTES");
+                }
+            } else {
+                throw new BadRequestException("NO EXISTE EL CURSO CON ID: " + idCurso);
             }
-        }else{
-            throw new BadRequestException("NO EXISTE EL CLIENTE CON EL ID: " +idCliente);
+        } else {
+            throw new BadRequestException("NO EXISTE EL CLIENTE CON EL ID: " + idCliente);
         }
     }
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -309,4 +328,18 @@ public class CursoService {
     }
 
 
+    public List<CursoTaller> listarByfechamaxima() {
+
+        LocalDateTime fechaactual = fechaService.obtenerFechaactual().getFechaactual();
+        System.out.println("ffffffffffffffffffffff" + fechaactual);
+
+        Query nativeQuery = entityManager.createNativeQuery("SELECT cc.id,ct.nombre,ct.lugar,ct.descripcion,ct.observaciones,ct.responsable,ct.fecha_inicio, ct.fecha_fin,ct.fecha_maxinscripcion FROM curso_taller ct join curso cc on cc.curso_taller_id = ct.id where ct.fecha_maxinscripcion >= ? ", CursoTaller.class);
+
+        nativeQuery.setParameter(1, fechaactual);
+        return nativeQuery.getResultList();
+
+
+    }
+
+//
 }

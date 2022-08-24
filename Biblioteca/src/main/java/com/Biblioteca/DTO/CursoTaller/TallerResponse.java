@@ -15,10 +15,11 @@ public class TallerResponse implements Serializable {
     private String observaciones;
     private String responsable;
     private Date fechaInicio;
+    private Date fechaMaxInscripcion;
     private Date fechaFin;
 
     ////crear curso
-    public TallerResponse(Long id, Long idTaller, String nombre, String lugar, String descripcion, String observaciones, String responsable, Date fechaInicio, Date fechaFin) {
+    public TallerResponse(Long id, Long idTaller, String nombre, String lugar, String descripcion, String observaciones, String responsable, Date fechaInicio, Date fechaMaxInscripcion,Date fechaFin) {
         this.id=id;
         this.idTaller=idTaller;
         this.nombre=nombre;
@@ -27,6 +28,7 @@ public class TallerResponse implements Serializable {
         this.observaciones=observaciones;
         this.responsable=responsable;
         this.fechaInicio=fechaInicio;
+        this.fechaMaxInscripcion=fechaMaxInscripcion;
         this.fechaFin=fechaFin;
     }
     public TallerResponse() {

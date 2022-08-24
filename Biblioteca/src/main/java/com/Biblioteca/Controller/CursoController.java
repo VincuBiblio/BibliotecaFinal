@@ -5,6 +5,7 @@ import com.Biblioteca.DTO.CursoTaller.CursoFecha;
 import com.Biblioteca.DTO.CursoTaller.CursoRequest;
 import com.Biblioteca.DTO.CursoTaller.CursoResponse;
 import com.Biblioteca.Exceptions.Mensaje;
+import com.Biblioteca.Models.CursoTaller.CursoTaller;
 import com.Biblioteca.Service.CursoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -71,4 +72,12 @@ public class CursoController {
     public ResponseEntity<?> agregar(@PathVariable Long idCliente, @PathVariable Long idCurso){
         return new ResponseEntity<>( cursoService.agregarClientesalCurso(idCliente,idCurso), HttpStatus.OK);
     }
+
+    @GetMapping("/allCursosbyfechamax")
+    public ResponseEntity<List<CursoTaller>> listAllCursosfechamax(){
+        List<CursoTaller> curso = cursoService.listarByfechamaxima();
+        return new ResponseEntity<List<CursoTaller>>(curso, HttpStatus.OK);
+    }
+
+
 }
