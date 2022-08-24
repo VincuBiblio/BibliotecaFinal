@@ -30,7 +30,7 @@ public class InventarioComputo implements Serializable {
 
     private String procesador;
 
-    private boolean estado;
+    private Boolean estado;
 
     @OneToMany (targetEntity = ComputoCliente.class, mappedBy = "inventario")
     private List<ComputoCliente> computoCliente;
