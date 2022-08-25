@@ -1,10 +1,7 @@
 package com.Biblioteca.Controller;
 
 
-import com.Biblioteca.DTO.CursoTaller.Cliente_cursoResponse;
-import com.Biblioteca.DTO.CursoTaller.CursoFecha;
-import com.Biblioteca.DTO.CursoTaller.CursoRequest;
-import com.Biblioteca.DTO.CursoTaller.CursoResponse;
+import com.Biblioteca.DTO.CursoTaller.*;
 import com.Biblioteca.Exceptions.Mensaje;
 import com.Biblioteca.Models.CursoTaller.CursoTaller;
 import com.Biblioteca.Service.CursoService;
@@ -84,6 +81,13 @@ public class CursoController {
     public ResponseEntity<Cliente_cursoResponse> listcursobyclientecurso(@PathVariable Long id) {
         Cliente_cursoResponse cc = cursoService.listarcursobyIdCursoutu(id);
         return new ResponseEntity<>(cc, HttpStatus.OK);
+    }
+
+    @GetMapping("/contarclientesencurso/{id}")
+    public ResponseEntity<N_clientesResponse> contarclientescurso(@PathVariable Long id) {
+        N_clientesResponse n= new N_clientesResponse();
+       n=cursoService.contar(id);
+        return new ResponseEntity<>(n, HttpStatus.OK);
     }
 
 

@@ -316,6 +316,23 @@ public class CursoService {
         return (BigInteger) nativeQuery.getSingleResult();
     }
 
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public N_clientesResponse contar(Long idCurso) {
+        Optional<Curso> curso = cursoRepository.findById(idCurso);
+        if (curso.isPresent()) {
+            N_clientesResponse n = new N_clientesResponse();
+            BigInteger numerodeparticipantes;
+            numerodeparticipantes =count1(idCurso);
+            n.setNumero(numerodeparticipantes.longValue());
+            return n;
+        }
+        else{
+            throw new BadRequestException("NO EXISTEN AUN PARTICIPANTES EN EL CURSO: " + idCurso);
+        }
+    }
+
+
+
 
     public List<CursoTaller> listarByfechamaxima() {
 
