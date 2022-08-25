@@ -1,6 +1,7 @@
 package com.Biblioteca.Controller;
 
 
+import com.Biblioteca.DTO.CursoTaller.Cliente_cursoResponse;
 import com.Biblioteca.DTO.CursoTaller.CursoFecha;
 import com.Biblioteca.DTO.CursoTaller.CursoRequest;
 import com.Biblioteca.DTO.CursoTaller.CursoResponse;
@@ -78,6 +79,13 @@ public class CursoController {
         List<CursoTaller> curso = cursoService.listarByfechamaxima();
         return new ResponseEntity<List<CursoTaller>>(curso, HttpStatus.OK);
     }
+
+    @GetMapping("/allBylistaclientes/{id}")
+    public ResponseEntity<Cliente_cursoResponse> listcursobyclientecurso(@PathVariable Long id) {
+        Cliente_cursoResponse cc = cursoService.listarcursobyIdCursoutu(id);
+        return new ResponseEntity<>(cc, HttpStatus.OK);
+    }
+
 
 
 }

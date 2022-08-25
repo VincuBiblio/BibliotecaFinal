@@ -15,7 +15,7 @@ public class CursoRequest implements Serializable {
     private String nombre;
     private String lugar;
     private String descripcion;
-    private String observaciones;
+//    private String observaciones;
     private String responsable;
     private Date fechaInicio;
     private Date fechaMaxInscripcion;

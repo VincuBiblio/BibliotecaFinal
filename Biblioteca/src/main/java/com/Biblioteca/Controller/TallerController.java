@@ -1,8 +1,6 @@
 package com.Biblioteca.Controller;
 
-import com.Biblioteca.DTO.CursoTaller.TallerFecha;
-import com.Biblioteca.DTO.CursoTaller.TallerRequest;
-import com.Biblioteca.DTO.CursoTaller.TallerResponse;
+import com.Biblioteca.DTO.CursoTaller.*;
 import com.Biblioteca.Exceptions.Mensaje;
 import com.Biblioteca.Service.TallerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,4 +61,11 @@ import java.util.List;
         public ResponseEntity<?> agregarclienteataller(@PathVariable Long idCliente, @PathVariable Long idTaller){
             return new ResponseEntity<>( tallerService.agregarClientesalTaller(idCliente,idTaller), HttpStatus.OK);
         }
+
+        @GetMapping("/allBylistaclientestaller/{id}")
+        public ResponseEntity<Cliente_tallerResponse> listtallerbycliente(@PathVariable Long id) {
+            Cliente_tallerResponse cc = tallerService.listartallerbyClientes(id);
+            return new ResponseEntity<>(cc, HttpStatus.OK);
+        }
+
     }

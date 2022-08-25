@@ -38,4 +38,5 @@ public class Curso implements Serializable {
 
     @ManyToMany(mappedBy ="cursos")
     private List<Cliente> clientes = new ArrayList<>();
+
 }

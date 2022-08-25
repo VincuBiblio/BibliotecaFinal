@@ -31,7 +31,7 @@ public class CursoTaller implements Serializable {
 
     private String descripcion;
 
-    private String observaciones;
+//    private String observaciones;
 
     private String responsable;
 

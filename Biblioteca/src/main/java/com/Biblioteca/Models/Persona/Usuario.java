@@ -11,6 +11,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Table(name = "usuario")
 @Entity
@@ -35,9 +36,9 @@ public class Usuario implements Serializable {
     private Roles roles;
 
 
+    @OneToMany(targetEntity = Evento.class,mappedBy = "usuario")
+    private List<Evento> evento;
 
-    @OneToOne(mappedBy = "usuario")
-    private Evento evento;
 
 
 

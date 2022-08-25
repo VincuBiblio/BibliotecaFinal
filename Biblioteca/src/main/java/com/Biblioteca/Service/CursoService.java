@@ -1,8 +1,6 @@
 package com.Biblioteca.Service;
 
-import com.Biblioteca.DTO.CursoTaller.CursoFecha;
-import com.Biblioteca.DTO.CursoTaller.CursoRequest;
-import com.Biblioteca.DTO.CursoTaller.CursoResponse;
+import com.Biblioteca.DTO.CursoTaller.*;
 import com.Biblioteca.Exceptions.BadRequestException;
 import com.Biblioteca.Models.CursoTaller.Curso.Curso;
 import com.Biblioteca.Models.CursoTaller.CursoTaller;
@@ -19,14 +17,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.math.BigInteger;
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -54,7 +45,6 @@ public class CursoService {
             newcursoTaller.setNombre(cursoRequest.getNombre());
             newcursoTaller.setLugar(cursoRequest.getLugar());
             newcursoTaller.setDescripcion(cursoRequest.getDescripcion());
-            newcursoTaller.setObservaciones(cursoRequest.getObservaciones());
             newcursoTaller.setResponsable(cursoRequest.getResponsable());
             newcursoTaller.setFechaInicio(cursoRequest.getFechaInicio());
             newcursoTaller.setFechaMaxInscripcion(cursoRequest.getFechaMaxInscripcion());
@@ -66,7 +56,7 @@ public class CursoService {
                 Optional<Curso> curso = cursoRepository.findByCursoTaller(cursoTaller);
 
                 return new CursoResponse(cursoTaller.getId(), curso.get().getId(), cursoTaller.getNombre(), cursoTaller.getLugar(),
-                        cursoTaller.getDescripcion(), cursoTaller.getObservaciones(), cursoTaller.getResponsable(),
+                        cursoTaller.getDescripcion(),   cursoTaller.getResponsable(),
                         cursoTaller.getFechaInicio(), cursoTaller.getFechaMaxInscripcion(), cursoTaller.getFechaFin(), curso.get().getActividades(),
                         curso.get().getMateriales(), curso.get().getNumParticipantes());
             } else {
@@ -105,7 +95,6 @@ public class CursoService {
             optionalc.get().setNombre(cursorequest.getNombre());
             optionalc.get().setLugar(cursorequest.getLugar());
             optionalc.get().setDescripcion(cursorequest.getDescripcion());
-            optionalc.get().setObservaciones(cursorequest.getObservaciones());
             optionalc.get().setResponsable(cursorequest.getResponsable());
             optionalc.get().setFechaInicio(cursorequest.getFechaInicio());
             optionalc.get().setFechaMaxInscripcion(cursorequest.getFechaMaxInscripcion());
@@ -154,7 +143,7 @@ public class CursoService {
                 Curso c = cursoRepository.save(optionalc.get());
                 if (c != null) {
                     guardaractualizacion2(c.getCursoTaller().getId(), cursorequest.getNombre(), cursorequest.getLugar(),
-                            cursorequest.getDescripcion(), cursorequest.getObservaciones(), cursorequest.getResponsable(),
+                            cursorequest.getDescripcion(),cursorequest.getResponsable(),
                             cursorequest.getFechaInicio(), cursorequest.getFechaMaxInscripcion(), cursorequest.getFechaFin());
                 } else {
                     throw new BadRequestException("NO SE ACTUALIZO EL CURSO");
@@ -169,14 +158,14 @@ public class CursoService {
     }
 
 
-    private boolean guardaractualizacion2(Long idCursotaller, String nombre, String lugar, String descripcion, String observaciones,
+    private boolean guardaractualizacion2(Long idCursotaller, String nombre, String lugar, String descripcion,
                                           String responsable, Date fechaInicio, Date fechaMax, Date fechaFin) {
         Optional<CursoTaller> optionalc = cursotallerRepository.findById(idCursotaller);
         if (optionalc.isPresent()) {
             optionalc.get().setNombre(nombre);
             optionalc.get().setLugar(lugar);
             optionalc.get().setDescripcion(descripcion);
-            optionalc.get().setObservaciones(observaciones);
+//            optionalc.get().setObservaciones(observaciones);
             optionalc.get().setResponsable(responsable);
             optionalc.get().setFechaInicio(fechaInicio);
             optionalc.get().setFechaMaxInscripcion(fechaMax);
@@ -201,7 +190,7 @@ public class CursoService {
             cr.setNombre(cRequest.getCursoTaller().getNombre());
             cr.setLugar(cRequest.getCursoTaller().getLugar());
             cr.setDescripcion(cRequest.getCursoTaller().getDescripcion());
-            cr.setObservaciones(cRequest.getCursoTaller().getObservaciones());
+//            cr.setObservaciones(cRequest.getCursoTaller().getObservaciones());
             cr.setResponsable(cRequest.getCursoTaller().getResponsable());
             cr.setFechaInicio(cRequest.getCursoTaller().getFechaInicio());
             cr.setFechaMaxInscripcion(cRequest.getCursoTaller().getFechaMaxInscripcion());
@@ -225,7 +214,7 @@ public class CursoService {
                 cr.setNombre(ct.get().getNombre());
                 cr.setLugar(ct.get().getLugar());
                 cr.setDescripcion(ct.get().getDescripcion());
-                cr.setObservaciones(ct.get().getObservaciones());
+//                cr.setObservaciones(ct.get().getObservaciones());
                 cr.setResponsable(ct.get().getResponsable());
                 cr.setFechaInicio(ct.get().getFechaInicio());
                 cr.setFechaMaxInscripcion(ct.get().getFechaMaxInscripcion());
@@ -254,7 +243,7 @@ public class CursoService {
                 cr.setNombre(cursotaller.get().getNombre());
                 cr.setLugar(cursotaller.get().getLugar());
                 cr.setDescripcion(cursotaller.get().getDescripcion());
-                cr.setObservaciones(cursotaller.get().getObservaciones());
+//                cr.setObservaciones(cursotaller.get().getObservaciones());
                 cr.setResponsable(cursotaller.get().getResponsable());
                 cr.setFechaInicio(cursotaller.get().getFechaInicio());
                 cr.setFechaMaxInscripcion(cursotaller.get().getFechaMaxInscripcion());
@@ -332,14 +321,58 @@ public class CursoService {
 
         LocalDateTime fechaactual = fechaService.obtenerFechaactual().getFechaactual();
         System.out.println("ffffffffffffffffffffff" + fechaactual);
-
-        Query nativeQuery = entityManager.createNativeQuery("SELECT cc.id,ct.nombre,ct.lugar,ct.descripcion,ct.observaciones,ct.responsable,ct.fecha_inicio, ct.fecha_fin,ct.fecha_maxinscripcion FROM curso_taller ct join curso cc on cc.curso_taller_id = ct.id where ct.fecha_maxinscripcion >= ? ", CursoTaller.class);
-
+        Query nativeQuery = entityManager.createNativeQuery("SELECT cc.id,ct.nombre,ct.lugar,ct.descripcion,ct.responsable,ct.fecha_inicio, ct.fecha_fin,ct.fecha_maxinscripcion FROM curso_taller ct join curso cc on cc.curso_taller_id = ct.id where ct.fecha_maxinscripcion >= ? ", CursoTaller.class);
         nativeQuery.setParameter(1, fechaactual);
         return nativeQuery.getResultList();
-
-
     }
 
-//
+
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public Cliente_cursoResponse listarcursobyIdCursoutu(Long id) {
+        Cliente_cursoResponse cr = new Cliente_cursoResponse();
+        Optional<Curso> curso = cursoRepository.findById(id);
+        if (curso.isPresent()) {
+            Optional<CursoTaller> cursotaller = cursotallerRepository.findById(curso.get().getCursoTaller().getId());
+            if (cursotaller.isPresent()) {
+                cr.setId(cursotaller.get().getId());
+                cr.setNombre(cursotaller.get().getNombre());
+                cr.setLugar(cursotaller.get().getLugar());
+                cr.setDescripcion(cursotaller.get().getDescripcion());
+//                cr.setObservaciones(cursotaller.get().getObservaciones());
+                cr.setResponsable(cursotaller.get().getResponsable());
+                cr.setFechaInicio(cursotaller.get().getFechaInicio());
+                cr.setFechaMaxInscripcion(cursotaller.get().getFechaMaxInscripcion());
+                cr.setFechaFin(cursotaller.get().getFechaFin());
+                cr.setIdCurso(curso.get().getId());
+                cr.setActividades(curso.get().getActividades());
+                cr.setMateriales(curso.get().getMateriales());
+                cr.setNumParticipantes(curso.get().getNumParticipantes());
+
+                List<ListaClientesRequest> list = curso.get().getClientes().stream().map(ac -> {
+                    ListaClientesRequest request = new ListaClientesRequest();
+                    request.setCedula(ac.getPersona().getCedula());
+                    request.setNombres(ac.getPersona().getNombres());
+                    request.setApellidos(ac.getPersona().getApellidos());
+                    request.setTelefono(ac.getPersona().getTelefono());
+                    request.setGenero(ac.getGenero());
+                    request.setEstadoCivil(ac.getEstadoCivil());
+                    request.setId(ac.getId());
+                    return request;
+                }).collect(Collectors.toList());
+
+                cr.setListaClientesRequests(list);
+
+                return cr;
+            } else {
+                throw new BadRequestException("NO EXISTE UN CURSO ASOCIADO A LA TABLA CURSO/TALLER");
+            }
+        } else {
+            throw new BadRequestException("NO EXISTE EL CURSO CON ID " + id);
+        }
+    }
+
+
+
+
+
 }

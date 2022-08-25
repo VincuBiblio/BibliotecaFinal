@@ -38,7 +38,6 @@ public class TallerService {
             newcursoTaller.setNombre(tallerRequest.getNombre());
             newcursoTaller.setLugar(tallerRequest.getLugar());
             newcursoTaller.setDescripcion(tallerRequest.getDescripcion());
-            newcursoTaller.setObservaciones(tallerRequest.getObservaciones());
             newcursoTaller.setResponsable(tallerRequest.getResponsable());
             newcursoTaller.setFechaInicio(tallerRequest.getFechaInicio());
             newcursoTaller.setFechaMaxInscripcion(tallerRequest.getFechaMaxInscripcion());
@@ -50,7 +49,7 @@ public class TallerService {
                 Optional<Taller> taller = tallerRepository.findByCursoTaller(cursoTaller);
 
                 return new TallerResponse(cursoTaller.getId(),taller.get().getId(), cursoTaller.getNombre(), cursoTaller.getLugar(),
-                        cursoTaller.getDescripcion(), cursoTaller.getObservaciones(), cursoTaller.getResponsable(),
+                        cursoTaller.getDescripcion(), cursoTaller.getResponsable(),
                         cursoTaller.getFechaInicio(),cursoTaller.getFechaMaxInscripcion(), cursoTaller.getFechaFin());
             } else {
                 throw new BadRequestException("No se pudo guardar el taller" + cursoTaller.getNombre());
@@ -85,7 +84,6 @@ public class TallerService {
             optionalc.get().setNombre(tallerrequest.getNombre());
             optionalc.get().setLugar(tallerrequest.getLugar());
             optionalc.get().setDescripcion(tallerrequest.getDescripcion());
-            optionalc.get().setObservaciones(tallerrequest.getObservaciones());
             optionalc.get().setResponsable(tallerrequest.getResponsable());
             optionalc.get().setFechaInicio(tallerrequest.getFechaInicio());
             optionalc.get().setFechaMaxInscripcion(tallerrequest.getFechaMaxInscripcion());
@@ -128,7 +126,7 @@ public class TallerService {
                Taller c = tallerRepository.save(optionalc.get());
                 if (c != null) {
                     guardaractualizaciontalleres(c.getCursoTaller().getId(), tallerrequest.getNombre(), tallerrequest.getLugar(),
-                            tallerrequest.getDescripcion(),tallerrequest.getObservaciones(),tallerrequest.getResponsable(),
+                            tallerrequest.getDescripcion(),tallerrequest.getResponsable(),
                             tallerrequest.getFechaInicio(),tallerrequest.getFechaMaxInscripcion(),tallerrequest.getFechaFin());
                 } else {
                     throw new BadRequestException("NO SE ACTUALIZO EL TALLER");
@@ -143,14 +141,13 @@ public class TallerService {
     }
 
 
-    private boolean guardaractualizaciontalleres(Long idCursotaller, String nombre, String lugar,String descripcion,String observaciones,
+    private boolean guardaractualizaciontalleres(Long idCursotaller, String nombre, String lugar,String descripcion,
                                           String responsable, Date fechaInicio,Date fechaMax, Date fechaFin) {
         Optional<CursoTaller> optionalc = cursotallerRepository.findById(idCursotaller);
         if (optionalc.isPresent()) {
             optionalc.get().setNombre(nombre);
             optionalc.get().setLugar(lugar);
             optionalc.get().setDescripcion(descripcion);
-            optionalc.get().setObservaciones(observaciones);
             optionalc.get().setResponsable(responsable);
             optionalc.get().setFechaInicio(fechaInicio);
             optionalc.get().setFechaMaxInscripcion(fechaMax);
@@ -175,7 +172,6 @@ public class TallerService {
             tr.setNombre(cRequest.getCursoTaller().getNombre());
             tr.setLugar(cRequest.getCursoTaller().getLugar());
             tr.setDescripcion(cRequest.getCursoTaller().getDescripcion());
-            tr.setObservaciones(cRequest.getCursoTaller().getObservaciones());
             tr.setResponsable(cRequest.getCursoTaller().getResponsable());
             tr.setFechaInicio(cRequest.getCursoTaller().getFechaInicio());
             tr.setFechaMaxInscripcion(cRequest.getCursoTaller().getFechaMaxInscripcion());
@@ -196,7 +192,6 @@ public class TallerService {
                 cr.setNombre(cursotaller.get().getNombre());
                 cr.setLugar(cursotaller.get().getLugar());
                 cr.setDescripcion(cursotaller.get().getDescripcion());
-                cr.setObservaciones(cursotaller.get().getDescripcion());
                 cr.setResponsable(cursotaller.get().getResponsable());
                 cr.setFechaInicio(cursotaller.get().getFechaInicio());
                 cr.setFechaMaxInscripcion(cursotaller.get().getFechaMaxInscripcion());
@@ -247,4 +242,48 @@ public class TallerService {
             throw new BadRequestException("NO EXISTE EL CLIENTE CON EL ID: " +idCliente);
         }
     }
+
+
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public Cliente_tallerResponse listartallerbyClientes(Long id) {
+        Cliente_tallerResponse cr = new Cliente_tallerResponse();
+        Optional<Taller> taller = tallerRepository.findById(id);
+        if (taller.isPresent()) {
+            Optional<CursoTaller> cursotaller = cursotallerRepository.findById(taller.get().getCursoTaller().getId());
+            if (cursotaller.isPresent()) {
+                cr.setId(cursotaller.get().getId());
+                cr.setNombre(cursotaller.get().getNombre());
+                cr.setLugar(cursotaller.get().getLugar());
+                cr.setDescripcion(cursotaller.get().getDescripcion());
+                cr.setResponsable(cursotaller.get().getResponsable());
+                cr.setFechaInicio(cursotaller.get().getFechaInicio());
+                cr.setFechaMaxInscripcion(cursotaller.get().getFechaMaxInscripcion());
+                cr.setFechaFin(cursotaller.get().getFechaFin());
+                cr.setIdTaller(taller.get().getId());
+
+                List<ListaClientesTallerRequest> list = taller.get().getClientes().stream().map(ac -> {
+                    ListaClientesTallerRequest request = new ListaClientesTallerRequest();
+                    request.setCedula(ac.getPersona().getCedula());
+                    request.setNombres(ac.getPersona().getNombres());
+                    request.setApellidos(ac.getPersona().getApellidos());
+                    request.setTelefono(ac.getPersona().getTelefono());
+                    request.setGenero(ac.getGenero());
+                    request.setEstadoCivil(ac.getEstadoCivil());
+                    request.setId(ac.getId());
+                    return request;
+                }).collect(Collectors.toList());
+
+                cr.setListaClientesTallerRequests(list);
+
+                return cr;
+            } else {
+                throw new BadRequestException("NO EXISTE UN TALLER ASOCIADO A LA TABLA CURSO/TALLER");
+            }
+        } else {
+            throw new BadRequestException("NO EXISTE EL TALLER CON ID " + id);
+        }
+    }
+
+
+
 }

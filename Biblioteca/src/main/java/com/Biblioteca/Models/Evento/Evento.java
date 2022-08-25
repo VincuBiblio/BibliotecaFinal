@@ -33,7 +33,10 @@ public class Evento implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date fecha;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="usuario_id", referencedColumnName = "id")
+    @Column(length = 10485760)
+    private String documento;
+
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinColumn(name = "id_usuario", referencedColumnName = "id")
     private Usuario usuario;
 }
