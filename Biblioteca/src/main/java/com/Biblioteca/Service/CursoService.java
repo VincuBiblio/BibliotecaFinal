@@ -338,7 +338,6 @@ public class CursoService {
                 cr.setNombre(cursotaller.get().getNombre());
                 cr.setLugar(cursotaller.get().getLugar());
                 cr.setDescripcion(cursotaller.get().getDescripcion());
-//                cr.setObservaciones(cursotaller.get().getObservaciones());
                 cr.setResponsable(cursotaller.get().getResponsable());
                 cr.setFechaInicio(cursotaller.get().getFechaInicio());
                 cr.setFechaMaxInscripcion(cursotaller.get().getFechaMaxInscripcion());

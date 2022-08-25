@@ -29,6 +29,6 @@ public class Taller implements Serializable {
     @JoinColumn(name="cursoTaller_id", referencedColumnName = "id")
     private CursoTaller cursoTaller;
 
-    @ManyToMany(mappedBy ="cursos")
+    @ManyToMany(mappedBy ="talleres")
     private List<Cliente> clientes = new ArrayList<>();
 }
