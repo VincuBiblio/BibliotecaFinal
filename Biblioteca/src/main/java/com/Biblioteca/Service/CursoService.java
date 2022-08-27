@@ -18,6 +18,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -59,7 +60,7 @@ public class CursoService {
                 Optional<Curso> curso = cursoRepository.findByCursoTaller(cursoTaller);
 
                 return new CursoResponse(cursoTaller.getId(), curso.get().getId(), cursoTaller.getNombre(), cursoTaller.getLugar(),
-                        cursoTaller.getDescripcion(),   cursoTaller.getResponsable(),
+                        cursoTaller.getDescripcion(), cursoTaller.getResponsable(),
                         cursoTaller.getFechaInicio(), cursoTaller.getFechaMaxInscripcion(), cursoTaller.getFechaFin(), curso.get().getActividades(),
                         curso.get().getMateriales(), curso.get().getNumParticipantes());
             } else {
@@ -146,7 +147,7 @@ public class CursoService {
                 Curso c = cursoRepository.save(optionalc.get());
                 if (c != null) {
                     guardaractualizacion2(c.getCursoTaller().getId(), cursorequest.getNombre(), cursorequest.getLugar(),
-                            cursorequest.getDescripcion(),cursorequest.getResponsable(),
+                            cursorequest.getDescripcion(), cursorequest.getResponsable(),
                             cursorequest.getFechaInicio(), cursorequest.getFechaMaxInscripcion(), cursorequest.getFechaFin());
                 } else {
                     throw new BadRequestException("NO SE ACTUALIZO EL CURSO");
@@ -285,20 +286,27 @@ public class CursoService {
         if (cliente.isPresent()) {
             Optional<Curso> curso = cursoRepository.findById(idCurso);
             if (curso.isPresent()) {
-                BigInteger numerodeparticipantes;
-                numerodeparticipantes = count1(idCurso);
-                System.out.println(numerodeparticipantes + " participantes");
-                if (curso.get().getNumParticipantes() >= numerodeparticipantes.longValue()+1) {
-                    try {
-                        cliente.get().getCursos().add(curso.get());
-                        clienteRepository.save(cliente.get());
-                        return true;
-
-                    } catch (Exception e) {
-                        throw new BadRequestException("no cumple el numero maximo de participantes");
+                Cliente cliid = curso.get().getClientes()
+                        .stream()
+                        .filter(a -> Objects.equals(a.getId(), idCliente))
+                        .findFirst().orElse(null);
+                if (cliid==null){
+                    BigInteger numerodeparticipantes;
+                    numerodeparticipantes = count1(idCurso);
+                    System.out.println(numerodeparticipantes + " participantes");
+                    if (curso.get().getNumParticipantes() >= numerodeparticipantes.longValue() + 1) {
+                        try {
+                            cliente.get().getCursos().add(curso.get());
+                            clienteRepository.save(cliente.get());
+                            return true;
+                        } catch (Exception e) {
+                            throw new BadRequestException("no cumple el numero maximo de participantes");
+                        }
+                    } else {
+                        throw new BadRequestException("SE ALCANZO EL NUMERO MAXIMO DE " + curso.get().getNumParticipantes() + " PARTICIPANTES");
                     }
                 } else {
-                    throw new BadRequestException("SE ALCANZO EL NUMERO MAXIMO DE " + curso.get().getNumParticipantes() + " PARTICIPANTES");
+                    throw new BadRequestException("El CLIENTE CON CEDULA " +cliente.get().getPersona().getCedula()+ " ya esta registrado en el curso "+ curso.get().getCursoTaller().getNombre());
                 }
             } else {
                 throw new BadRequestException("NO EXISTE EL CURSO CON ID: " + idCurso);
@@ -308,55 +316,6 @@ public class CursoService {
         }
     }
 
-
-
-//    @Transactional
-//    public boolean agregarClientesalCurso(Long idCliente, Long idCurso) {
-//        Optional<Cliente> cliente = clienteRepository.findById(idCliente);
-//        if (cliente.isPresent()) {
-//            Optional<Curso> curso = cursoRepository.findById(idCurso);
-//            if (curso.isPresent()) {
-////////
-//                Cliente cliid = curso.get().getClientes()
-//                        .stream()
-//                        .findFirst().filter(a -> Objects.equals(a.getId(), idCliente))
-//                        .orElseThrow(() -> new ResponseNotFoundException("Clienteeeeeee", "id", idCliente + ""));
-////                {
-////                    try {
-////                        return Objects.equals(a.getId(), idCliente)
-////
-////                    } catch (IOException e) {
-////                        //handle exception
-////                    }
-////                    return false;
-////                }
-//                if (!cliid.equals(idCliente)) {
-//                    BigInteger numerodeparticipantes;
-//                    numerodeparticipantes = count1(idCurso);
-//                    System.out.println(numerodeparticipantes + " participantes");
-//                    if (curso.get().getNumParticipantes() >= numerodeparticipantes.longValue()+1) {
-//                        try {
-//
-//                            cliente.get().getCursos().add(curso.get());
-//                            clienteRepository.save(cliente.get());
-//                            return true;
-//
-//                        } catch (Exception e) {
-//                            throw new BadRequestException("no cumple el numero maximo de participantes");
-//                        }
-//                    } else {
-//                        throw new BadRequestException("SE ALCANZO EL NUMERO MAXIMO DE " + curso.get().getNumParticipantes() + " PARTICIPANTES");
-//                    }
-//                } else {
-//                    throw new BadRequestException("EL CLIENTE YA SE ENCUENTRA REGISTRADO EN EL CURSO: " + idCurso);
-//                }
-//            } else {
-//                throw new BadRequestException("NO EXISTE EL CURSO CON ID: " + idCurso);
-//            }
-//        } else {
-//            throw new BadRequestException("NO EXISTE EL CLIENTE CON EL ID: " + idCliente);
-//        }
-//    }
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -382,8 +341,6 @@ public class CursoService {
             throw new BadRequestException("NO EXISTEN AUN PARTICIPANTES EN EL CURSO: " + idCurso);
         }
     }
-
-
 
 
     public List<CursoTaller> listarByfechamaxima() {
@@ -459,7 +416,5 @@ public class CursoService {
         throw new ResponseNotFoundException("Curso", "id", idCurso + "");
 
     }
-
-
 
 }
