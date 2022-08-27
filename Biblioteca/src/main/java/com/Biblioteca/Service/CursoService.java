@@ -2,6 +2,7 @@ package com.Biblioteca.Service;
 
 import com.Biblioteca.DTO.CursoTaller.*;
 import com.Biblioteca.Exceptions.BadRequestException;
+import com.Biblioteca.Exceptions.ResponseNotFoundException;
 import com.Biblioteca.Models.CursoTaller.Curso.Curso;
 import com.Biblioteca.Models.CursoTaller.CursoTaller;
 import com.Biblioteca.Models.Persona.Cliente;
@@ -10,6 +11,7 @@ import com.Biblioteca.Repository.CursoTaller.CursoTallerRepository;
 import com.Biblioteca.Repository.Persona.ClienteRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -20,6 +22,7 @@ import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -282,11 +285,10 @@ public class CursoService {
         if (cliente.isPresent()) {
             Optional<Curso> curso = cursoRepository.findById(idCurso);
             if (curso.isPresent()) {
-
                 BigInteger numerodeparticipantes;
                 numerodeparticipantes = count1(idCurso);
-                System.out.println(numerodeparticipantes + "maximo de participantes");
-                if (curso.get().getNumParticipantes() >= numerodeparticipantes.longValue()) {
+                System.out.println(numerodeparticipantes + " participantes");
+                if (curso.get().getNumParticipantes() >= numerodeparticipantes.longValue()+1) {
                     try {
                         cliente.get().getCursos().add(curso.get());
                         clienteRepository.save(cliente.get());
@@ -305,6 +307,56 @@ public class CursoService {
             throw new BadRequestException("NO EXISTE EL CLIENTE CON EL ID: " + idCliente);
         }
     }
+
+
+
+//    @Transactional
+//    public boolean agregarClientesalCurso(Long idCliente, Long idCurso) {
+//        Optional<Cliente> cliente = clienteRepository.findById(idCliente);
+//        if (cliente.isPresent()) {
+//            Optional<Curso> curso = cursoRepository.findById(idCurso);
+//            if (curso.isPresent()) {
+////////
+//                Cliente cliid = curso.get().getClientes()
+//                        .stream()
+//                        .findFirst().filter(a -> Objects.equals(a.getId(), idCliente))
+//                        .orElseThrow(() -> new ResponseNotFoundException("Clienteeeeeee", "id", idCliente + ""));
+////                {
+////                    try {
+////                        return Objects.equals(a.getId(), idCliente)
+////
+////                    } catch (IOException e) {
+////                        //handle exception
+////                    }
+////                    return false;
+////                }
+//                if (!cliid.equals(idCliente)) {
+//                    BigInteger numerodeparticipantes;
+//                    numerodeparticipantes = count1(idCurso);
+//                    System.out.println(numerodeparticipantes + " participantes");
+//                    if (curso.get().getNumParticipantes() >= numerodeparticipantes.longValue()+1) {
+//                        try {
+//
+//                            cliente.get().getCursos().add(curso.get());
+//                            clienteRepository.save(cliente.get());
+//                            return true;
+//
+//                        } catch (Exception e) {
+//                            throw new BadRequestException("no cumple el numero maximo de participantes");
+//                        }
+//                    } else {
+//                        throw new BadRequestException("SE ALCANZO EL NUMERO MAXIMO DE " + curso.get().getNumParticipantes() + " PARTICIPANTES");
+//                    }
+//                } else {
+//                    throw new BadRequestException("EL CLIENTE YA SE ENCUENTRA REGISTRADO EN EL CURSO: " + idCurso);
+//                }
+//            } else {
+//                throw new BadRequestException("NO EXISTE EL CURSO CON ID: " + idCurso);
+//            }
+//        } else {
+//            throw new BadRequestException("NO EXISTE EL CLIENTE CON EL ID: " + idCliente);
+//        }
+//    }
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -387,7 +439,26 @@ public class CursoService {
         }
     }
 
+    @Transactional
+    @Modifying
+    public void deleteClientebyIdCurso(Long idCurso, Long idCliente) {
+            Optional<Curso> optionalc = cursoRepository.findById(idCurso);
+        if (optionalc.isPresent()) {
+            Cliente cliid = optionalc.get().getClientes()
+                    .stream()
+                    .filter(a -> Objects.equals(a.getId(), idCliente))
+                    .findFirst()
+                    .orElseThrow(() -> new ResponseNotFoundException("Cliente", "id", idCliente + ""));
+            try {
+                cursoRepository.deleteQuery(idCurso,cliid.getId());
+                return;
+            } catch (Exception e) {
+                throw new BadRequestException("Error al eliminar el cliente con id: ");
+            }
+        }
+        throw new ResponseNotFoundException("Curso", "id", idCurso + "");
 
+    }
 
 
 

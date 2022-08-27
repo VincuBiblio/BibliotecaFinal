@@ -4,6 +4,7 @@ package com.Biblioteca.Controller;
 import com.Biblioteca.DTO.CursoTaller.*;
 import com.Biblioteca.Exceptions.Mensaje;
 import com.Biblioteca.Models.CursoTaller.CursoTaller;
+import com.Biblioteca.Repository.CursoTaller.CursoRepository;
 import com.Biblioteca.Service.CursoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -20,6 +21,8 @@ import java.util.List;
 public class CursoController {
     @Autowired
     private CursoService cursoService;
+    @Autowired
+    private CursoRepository cursoRepository;
 
     @PostMapping("/registrarCurso")
     public ResponseEntity<?> registroCurso(@RequestBody CursoRequest request){
@@ -91,5 +94,10 @@ public class CursoController {
     }
 
 
+    @DeleteMapping("{idCurso}/cliente/{idCliente}")
+    public ResponseEntity<?> deleteActividad(@PathVariable Long idCurso, @PathVariable Long idCliente) {
+        cursoService.deleteClientebyIdCurso(idCurso, idCliente);
+        return new ResponseEntity<>(new Mensaje("Cliente con id: " + idCliente + ", eliminado del curso"+idCurso), HttpStatus.OK);
+    }
 
 }
