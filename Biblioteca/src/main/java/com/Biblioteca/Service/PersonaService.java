@@ -461,7 +461,7 @@ public class PersonaService implements UserDetailsService {
     }
 
     public PersonaUsuarioResponse login (UsuarioRequest usuarioRequest) throws Exception {
-        Optional<Persona> optional = personaRepository.findByEmail(usuarioRequest.getEmail());
+        Optional<Persona> optional = personaRepository.findByCedula(usuarioRequest.getCedula());
         if(optional.isPresent()){
             Optional<Usuario> usuarioOptional= usuarioRepository.findByPersona(optional.get());
             if(usuarioOptional.isPresent()){
@@ -471,14 +471,14 @@ public class PersonaService implements UserDetailsService {
                             optional.get().getTelefono(), usuarioOptional.get().getClave(), usuarioOptional.get().getRoles().getId(),
                             generateTokenLogin(usuarioRequest));
                 }else{
-                    throw new BadRequestException("Contraseña incorrecta para email: " + usuarioRequest.getEmail());
+                    throw new BadRequestException("Contraseña incorrecta para email: " + usuarioRequest.getCedula());
                 }
             }else{
-                log.info("EMAIL NO EXISTE");
+                log.info("CEDULA NO EXISTE");
                 throw new BadRequestException("Usuario no registrado como usuario");
             }
         }else{
-            log.info("EMAIL NO EXISTE");
+            log.info("CEDULA NO EXISTE");
             throw new BadRequestException("Usuario no registrado");
         }
     }
@@ -491,13 +491,13 @@ public class PersonaService implements UserDetailsService {
     public String generateTokenLogin(UsuarioRequest userRequest) throws Exception {
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(userRequest.getEmail(), userRequest.getEmail())
+                    new UsernamePasswordAuthenticationToken(userRequest.getCedula(), userRequest.getCedula())
             );
         } catch (Exception ex) {
-            log.error("INVALID: error al generar token en login de usuario con email: {}", userRequest.getEmail());
+            log.error("INVALID: error al generar token en login de usuario con cedula: {}", userRequest.getCedula());
             throw new Exception("INAVALID");
         }
-        return jwtUtil.generateToken(userRequest.getEmail());
+        return jwtUtil.generateToken(userRequest.getCedula());
     }
 
     public String generateTokenSignUp(PersonaUsuarioRequest registerRequest) throws Exception {
