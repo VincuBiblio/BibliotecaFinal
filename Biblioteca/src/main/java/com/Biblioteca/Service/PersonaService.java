@@ -484,8 +484,8 @@ public class PersonaService implements UserDetailsService {
     }
         @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<Persona> usuario = personaRepository.findByEmail(email);
-        return new org.springframework.security.core.userdetails.User(usuario.get().getEmail(), usuario.get().getEmail(), new ArrayList<>());
+        Optional<Persona> usuario = personaRepository.findByCedula(email);
+        return new org.springframework.security.core.userdetails.User(usuario.get().getCedula(), usuario.get().getCedula(), new ArrayList<>());
     }
 
     public String generateTokenLogin(UsuarioRequest userRequest) throws Exception {
