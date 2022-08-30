@@ -1,8 +1,10 @@
 package com.Biblioteca.Controller.Computo;
 
 import com.Biblioteca.DTO.Computo.ComputoClienteRequest;
+import com.Biblioteca.DTO.Computo.ComputoClienteResponse;
 import com.Biblioteca.DTO.Computo.InventarioRequest;
 import com.Biblioteca.DTO.Computo.InventarioResponse;
+import com.Biblioteca.DTO.CursoTaller.CursoResponse;
 import com.Biblioteca.DTO.Ubicacion.BarrioRequest;
 import com.Biblioteca.DTO.Ubicacion.BarrioResponse;
 import com.Biblioteca.Models.Servicio.CentroComputo.ComputoCliente;
@@ -69,5 +71,13 @@ public class InventarioComputoController {
     public ResponseEntity<?> registroComputadorCliente(@RequestBody ComputoClienteRequest request){
         return new ResponseEntity<>(computoClienteService.registroComputoCliente(request), HttpStatus.OK);
     }
+
+    @GetMapping("/allClienteComputo")
+    public ResponseEntity<List<ComputoClienteResponse>> listAllComputoCliente(){
+        List<ComputoClienteResponse> cc = computoClienteService.listAllPrestamos();
+        return new ResponseEntity<List<ComputoClienteResponse>>(cc, HttpStatus.OK);
+    }
+
+
 
 }

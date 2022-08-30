@@ -36,7 +36,8 @@ public class UbicacionController {
     }
 
     @GetMapping("provincia/allProvincias")
-    public ResponseEntity<List<ProvinciaResponse>> listAllProvincias() {
+    public ResponseEntity<List<
+            ProvinciaResponse>> listAllProvincias() {
         List<ProvinciaResponse> result = ubicacionService.listAllProvincias();
         return new ResponseEntity<List<ProvinciaResponse>>(result, HttpStatus.OK);
     }
