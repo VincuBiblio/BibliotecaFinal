@@ -1,6 +1,7 @@
 package com.Biblioteca.Controller;
 
 import com.Biblioteca.DTO.CursoTaller.*;
+import com.Biblioteca.DTO.CursoTaller.reportes.TallerporGeneroResponse;
 import com.Biblioteca.Exceptions.Mensaje;
 import com.Biblioteca.Service.TallerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +67,26 @@ import java.util.List;
         public ResponseEntity<Cliente_tallerResponse> listtallerbycliente(@PathVariable Long id) {
             Cliente_tallerResponse cc = tallerService.listartallerbyClientes(id);
             return new ResponseEntity<>(cc, HttpStatus.OK);
+        }
+
+        @GetMapping("/contarclientesentaller/{id}")
+        public ResponseEntity<N_clientestallerResponse> contarclientestaller(@PathVariable Long id) {
+            N_clientestallerResponse n= new N_clientestallerResponse();
+            n=tallerService.contarclientes_entaller(id);
+            return new ResponseEntity<>(n, HttpStatus.OK);
+        }
+
+        @DeleteMapping("{idTaller}/cliente/{idCliente}")
+        public ResponseEntity<?> deletecleintedetaller(@PathVariable Long idTaller, @PathVariable Long idCliente) {
+            tallerService.deleteClientebyIdTaller(idTaller, idCliente);
+            return new ResponseEntity<>(new Mensaje("Cliente con id: " + idCliente + ", eliminado del taller "+idTaller), HttpStatus.OK);
+        }
+
+        @GetMapping("/reportetallerporgenero/{id}")
+        public ResponseEntity<TallerporGeneroResponse> reportegenerotaller(@PathVariable Long id) {
+            TallerporGeneroResponse tg= new TallerporGeneroResponse();
+            tg=tallerService.reportetallerporgenero(id);
+            return new ResponseEntity<>(tg, HttpStatus.OK);
         }
 
     }

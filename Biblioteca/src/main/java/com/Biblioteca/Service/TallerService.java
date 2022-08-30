@@ -1,8 +1,9 @@
 package com.Biblioteca.Service;
 
 import com.Biblioteca.DTO.CursoTaller.*;
+import com.Biblioteca.DTO.CursoTaller.reportes.TallerporGeneroResponse;
 import com.Biblioteca.Exceptions.BadRequestException;
-import com.Biblioteca.Models.CursoTaller.Curso.Curso;
+import com.Biblioteca.Exceptions.ResponseNotFoundException;
 import com.Biblioteca.Models.CursoTaller.CursoTaller;
 import com.Biblioteca.Models.CursoTaller.Taller.Taller;
 import com.Biblioteca.Models.Persona.Cliente;
@@ -11,12 +12,17 @@ import com.Biblioteca.Repository.CursoTaller.TallerRepository;
 import com.Biblioteca.Repository.Persona.ClienteRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -227,6 +233,11 @@ public class TallerService {
         if(cliente.isPresent()) {
             Optional<Taller> taller = tallerRepository.findById(idTaller);
             if(taller.isPresent()) {
+                Cliente cliid = taller.get().getClientes()
+                        .stream()
+                        .filter(a -> Objects.equals(a.getId(), idCliente))
+                        .findFirst().orElse(null);
+                if (cliid==null){
                 try{
                     cliente.get().getTalleres().add(taller.get());
                     clienteRepository.save(cliente.get());
@@ -234,7 +245,9 @@ public class TallerService {
                 }catch (Exception e){
                     throw new BadRequestException("No se guardo el cliente en el taller");
                 }
-
+                } else {
+                    throw new BadRequestException("El CLIENTE CON CEDULA " +cliente.get().getPersona().getCedula()+ " ya esta registrado en el taller "+ taller.get().getCursoTaller().getNombre());
+                }
             }else{
                 throw new BadRequestException("No existe un taller con id" +idTaller);
             }
@@ -284,6 +297,110 @@ public class TallerService {
         }
     }
 
+    @PersistenceContext
+    private EntityManager entityManager;
 
+
+    public BigInteger countarinscritos(Long id) {
+        Query nativeQuery = entityManager.createNativeQuery("SELECT count(*) FROM taller_clientes tc where tc.taller_id= ?");
+        nativeQuery.setParameter(1, id);
+        return (BigInteger) nativeQuery.getSingleResult();
+    }
+
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public N_clientestallerResponse contarclientes_entaller(Long idTaller) {
+        Optional<Taller> taller = tallerRepository.findById(idTaller);
+        if (taller.isPresent()) {
+            N_clientestallerResponse n = new N_clientestallerResponse();
+            BigInteger numerodeparticipantes;
+            numerodeparticipantes =countarinscritos(idTaller);
+            n.setNumero(numerodeparticipantes.longValue());
+            return n;
+        }
+        else{
+            throw new BadRequestException("NO EXISTEN AUN PARTICIPANTES EN EL TALLER: " + idTaller);
+        }
+    }
+
+    @Transactional
+    @Modifying
+    public void deleteClientebyIdTaller(Long idTaller, Long idCliente) {
+        Optional<Taller> optionalt = tallerRepository.findById(idTaller);
+        if (optionalt.isPresent()) {
+            Cliente cliid = optionalt.get().getClientes()
+                    .stream()
+                    .filter(a -> Objects.equals(a.getId(), idCliente))
+                    .findFirst()
+                    .orElseThrow(() -> new ResponseNotFoundException("Cliente", "id", idCliente + ""));
+            try {
+                tallerRepository.deleteQuery(idTaller,cliid.getId());
+                return;
+            } catch (Exception e) {
+                throw new BadRequestException("Error al eliminar el cliente con id: ");
+            }
+        }
+        throw new ResponseNotFoundException("Taller", "id", idTaller + "");
+    }
+
+
+
+    public BigInteger contarporgeneroM(Long id) {
+        String generoM="MASCULINO";
+        Query nativeQuery = entityManager.createNativeQuery("SELECT count(*) FROM taller_clientes tc " +
+                "join cliente cl on cl.id=tc.cliente_id where tc.taller_id= ? and cl.genero= ?");
+        nativeQuery.setParameter(1, id);
+        nativeQuery.setParameter(2, generoM);
+        return (BigInteger) nativeQuery.getSingleResult();
+    }
+    public BigInteger contarporgeneroF(Long id) {
+        String generoF="FEMENINO";
+        Query nativeQuery = entityManager.createNativeQuery("SELECT count(*) FROM taller_clientes tc " +
+                "join cliente cl on cl.id=tc.cliente_id where tc.taller_id= ? and cl.genero= ?");
+        nativeQuery.setParameter(1, id);
+        nativeQuery.setParameter(2, generoF);
+        return (BigInteger) nativeQuery.getSingleResult();
+    }
+    public BigInteger contarporgeneroOtro(Long id) {
+        String generoOtro="OTRO";
+        Query nativeQuery = entityManager.createNativeQuery("SELECT count(*) FROM taller_clientes tc " +
+                "join cliente cl on cl.id=tc.cliente_id where tc.taller_id= ? and cl.genero= ?");
+        nativeQuery.setParameter(1, id);
+        nativeQuery.setParameter(2, generoOtro);
+        return (BigInteger) nativeQuery.getSingleResult();
+    }
+
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public  TallerporGeneroResponse reportetallerporgenero(Long idTaller) {
+        Optional<Taller> taller = tallerRepository.findById(idTaller);
+        if (taller.isPresent()) {
+            TallerporGeneroResponse tr = new TallerporGeneroResponse();
+            BigInteger numeroM,numeroF, numeroOtro, total;
+            Double porcentajeM,porcentajeF,porcentajeOtro;
+            numeroM =contarporgeneroM(idTaller);
+            numeroF=contarporgeneroF(idTaller);
+            numeroOtro=contarporgeneroOtro(idTaller);
+            total=countarinscritos(idTaller);
+            porcentajeM=(numeroM.doubleValue()*100)/total.doubleValue();
+            porcentajeF=(numeroF.doubleValue()*100)/total.doubleValue();
+            porcentajeOtro=(numeroOtro.doubleValue()*100)/total.doubleValue();
+            try {
+                tr.setN_Masculino(numeroM.longValue());
+                tr.setN_Femenino(numeroF.longValue());
+                tr.setN_Otro(numeroOtro.longValue());
+                tr.setTotal(total.longValue());
+                tr.setPorcent_Masculino(porcentajeM);
+                tr.setPorcent_Femenino(porcentajeF);
+                tr.setPorcent_Otro(porcentajeOtro);
+                if(total.longValue()>0) {
+                    return tr;
+                } else {
+                    throw new BadRequestException("NO EXISTEN AUN PARTICIPANTES EN EL TALLER: " + idTaller);
+                }
+            } catch (Exception e) {
+                throw new BadRequestException("El taller  "+idTaller+" aun no tiene participantes");
+            }
+        }
+        throw new ResponseNotFoundException("Taller", "id", idTaller + "");
+    }
 
 }

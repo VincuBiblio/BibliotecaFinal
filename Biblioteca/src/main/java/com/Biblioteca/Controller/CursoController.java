@@ -2,6 +2,7 @@ package com.Biblioteca.Controller;
 
 
 import com.Biblioteca.DTO.CursoTaller.*;
+import com.Biblioteca.DTO.CursoTaller.reportes.CursoporgeneroResponse;
 import com.Biblioteca.Exceptions.Mensaje;
 import com.Biblioteca.Models.CursoTaller.CursoTaller;
 import com.Biblioteca.Repository.CursoTaller.CursoRepository;
@@ -95,9 +96,18 @@ public class CursoController {
 
 
     @DeleteMapping("{idCurso}/cliente/{idCliente}")
-    public ResponseEntity<?> deleteActividad(@PathVariable Long idCurso, @PathVariable Long idCliente) {
+    public ResponseEntity<?> deleteClientedecurso(@PathVariable Long idCurso, @PathVariable Long idCliente) {
         cursoService.deleteClientebyIdCurso(idCurso, idCliente);
         return new ResponseEntity<>(new Mensaje("Cliente con id: " + idCliente + ", eliminado del curso"+idCurso), HttpStatus.OK);
     }
+
+    @GetMapping("/reportecursoporgenero/{id}")
+    public ResponseEntity<CursoporgeneroResponse> reportegenerocurso(@PathVariable Long id) {
+        CursoporgeneroResponse cg= new CursoporgeneroResponse();
+        cg=cursoService.reporteporgenero(id);
+        return new ResponseEntity<>(cg, HttpStatus.OK);
+    }
+
+
 
 }

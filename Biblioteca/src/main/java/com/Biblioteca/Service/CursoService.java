@@ -1,6 +1,7 @@
 package com.Biblioteca.Service;
 
 import com.Biblioteca.DTO.CursoTaller.*;
+import com.Biblioteca.DTO.CursoTaller.reportes.CursoporgeneroResponse;
 import com.Biblioteca.Exceptions.BadRequestException;
 import com.Biblioteca.Exceptions.ResponseNotFoundException;
 import com.Biblioteca.Models.CursoTaller.Curso.Curso;
@@ -414,7 +415,67 @@ public class CursoService {
             }
         }
         throw new ResponseNotFoundException("Curso", "id", idCurso + "");
-
     }
+
+
+    public BigInteger contarporgeneroM(Long id) {
+        String generoM="MASCULINO";
+        Query nativeQuery = entityManager.createNativeQuery("SELECT count(*) FROM cursos_clientes cc " +
+                "join cliente cl on cl.id=cc.cliente_id where cc.curso_id= ? and cl.genero= ?");
+        nativeQuery.setParameter(1, id);
+        nativeQuery.setParameter(2, generoM);
+        return (BigInteger) nativeQuery.getSingleResult();
+    }
+    public BigInteger contarporgeneroF(Long id) {
+        String generoF="FEMENINO";
+        Query nativeQuery = entityManager.createNativeQuery("SELECT count(*) FROM cursos_clientes cc " +
+                "join cliente cl on cl.id=cc.cliente_id where cc.curso_id= ? and cl.genero= ?");
+        nativeQuery.setParameter(1, id);
+        nativeQuery.setParameter(2, generoF);
+        return (BigInteger) nativeQuery.getSingleResult();
+    }
+    public BigInteger contarporgeneroOtro(Long id) {
+        String generoOtro="OTRO";
+        Query nativeQuery = entityManager.createNativeQuery("SELECT count(*) FROM cursos_clientes cc " +
+                "join cliente cl on cl.id=cc.cliente_id where cc.curso_id= ? and cl.genero= ?");
+        nativeQuery.setParameter(1, id);
+        nativeQuery.setParameter(2, generoOtro);
+        return (BigInteger) nativeQuery.getSingleResult();
+    }
+
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public CursoporgeneroResponse reporteporgenero(Long idCurso) {
+        Optional<Curso> curso = cursoRepository.findById(idCurso);
+        if (curso.isPresent()) {
+            CursoporgeneroResponse cr = new CursoporgeneroResponse();
+            BigInteger numeroM,numeroF, numeroOtro, total;
+            Double porcentajeM,porcentajeF,porcentajeOtro;
+                numeroM =contarporgeneroM(idCurso);
+                numeroF=contarporgeneroF(idCurso);
+                numeroOtro=contarporgeneroOtro(idCurso);
+                total=count1(idCurso);
+                porcentajeM=(numeroM.doubleValue()*100)/total.doubleValue();
+                porcentajeF=(numeroF.doubleValue()*100)/total.doubleValue();
+                porcentajeOtro=(numeroOtro.doubleValue()*100)/total.doubleValue();
+            try {
+                cr.setN_Masculino(numeroM.longValue());
+                cr.setN_Femenino(numeroF.longValue());
+                cr.setN_Otro(numeroOtro.longValue());
+                cr.setTotal(total.longValue());
+                cr.setPorcent_Masculino(porcentajeM);
+                cr.setPorcent_Femenino(porcentajeF);
+                cr.setPorcent_Otro(porcentajeOtro);
+                if(total.longValue()>0) {
+                    return cr;
+                } else {
+                    throw new BadRequestException("NO EXISTEN AUN PARTICIPANTES EN EL CURSO: " + idCurso);
+                }
+            } catch (Exception e) {
+                throw new BadRequestException("El curso  "+idCurso+" aun no tiene participantes");
+            }
+        }
+        throw new ResponseNotFoundException("Curso", "id", idCurso + "");
+    }
+
 
 }
