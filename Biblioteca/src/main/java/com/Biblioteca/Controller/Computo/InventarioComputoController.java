@@ -90,4 +90,11 @@ public class InventarioComputoController {
         return new ResponseEntity(new Mensaje("Prestamo Actualizado"), HttpStatus.OK);
     }
 
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deletePrestamoById(@PathVariable Long id){
+        computoClienteService.deleteById(id);
+        return  new ResponseEntity<>(new Mensaje("Prestamo  eliminado"),HttpStatus.OK);
+
+    }
 }

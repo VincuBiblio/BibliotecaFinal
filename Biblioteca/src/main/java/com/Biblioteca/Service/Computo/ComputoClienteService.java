@@ -157,4 +157,13 @@ public class ComputoClienteService {
         }
     }
 
+
+    public void deleteById(Long id){
+        Optional<ComputoCliente> cc = computoClienteRepository.findById(id);
+        if(cc.isPresent()){
+           computoClienteRepository.deleteById(id);
+        }else{
+            throw new BadRequestException("No existe registro con id " + id);
+        }
+    }
 }
