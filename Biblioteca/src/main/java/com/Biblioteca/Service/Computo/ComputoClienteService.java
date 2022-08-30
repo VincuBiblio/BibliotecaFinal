@@ -1,5 +1,7 @@
 package com.Biblioteca.Service.Computo;
 
+import com.Biblioteca.DTO.Computo.ComputoClienteHoraFinRequest;
+import com.Biblioteca.DTO.Computo.ComputoClienteHoraFinResponse;
 import com.Biblioteca.DTO.Computo.ComputoClienteRequest;
 import com.Biblioteca.DTO.Computo.ComputoClienteResponse;
 import com.Biblioteca.Exceptions.BadRequestException;
@@ -118,6 +120,41 @@ public class ComputoClienteService {
                 throw new BadRequestException("No existe cliente con id" + computoCliente.getCliente().getId());
             }
         }).collect(Collectors.toList());
+    }
+
+
+    @Transactional
+    public ComputoClienteHoraFinResponse listHoraFin(Long id){
+        Optional<ComputoCliente> cc = computoClienteRepository.findById(id);
+        if(cc.isPresent()){
+            ComputoClienteHoraFinResponse response = new ComputoClienteHoraFinResponse();
+            if(cc.get().getHoraFin().isEmpty()){
+                response.setHoraFin("0");
+                return response;
+            }else{
+                response.setHoraFin(cc.get().getHoraFin());
+                return response;
+            }
+        }else{
+            throw new BadRequestException("No existe registro con id" + id);
+        }
+    }
+
+
+    @Transactional
+    public boolean updateComputoCliente(ComputoClienteHoraFinRequest request){
+        Optional<ComputoCliente> cc = computoClienteRepository.findById(request.getId());
+        if(cc.isPresent()){
+            cc.get().setHoraFin(request.getHoraFin());
+            try {
+                ComputoCliente ccli= computoClienteRepository.save(cc.get());
+                return true;
+            }catch (Exception ex) {
+                throw new BadRequestException("No se actualizó la hora de fin" + ex);
+            }
+        }else{
+            throw new BadRequestException("No existe registro con id" + request.getId());
+        }
     }
 
 }

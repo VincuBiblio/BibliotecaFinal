@@ -1,12 +1,11 @@
 package com.Biblioteca.Controller.Computo;
 
-import com.Biblioteca.DTO.Computo.ComputoClienteRequest;
-import com.Biblioteca.DTO.Computo.ComputoClienteResponse;
-import com.Biblioteca.DTO.Computo.InventarioRequest;
-import com.Biblioteca.DTO.Computo.InventarioResponse;
+import com.Biblioteca.DTO.Computo.*;
 import com.Biblioteca.DTO.CursoTaller.CursoResponse;
+import com.Biblioteca.DTO.Persona.PersonaUsuarioRequest;
 import com.Biblioteca.DTO.Ubicacion.BarrioRequest;
 import com.Biblioteca.DTO.Ubicacion.BarrioResponse;
+import com.Biblioteca.Exceptions.Mensaje;
 import com.Biblioteca.Models.Servicio.CentroComputo.ComputoCliente;
 import com.Biblioteca.Service.Computo.ComputoClienteService;
 import com.Biblioteca.Service.Computo.ComputoService;
@@ -78,6 +77,17 @@ public class InventarioComputoController {
         return new ResponseEntity<List<ComputoClienteResponse>>(cc, HttpStatus.OK);
     }
 
+    @GetMapping("/id/horaFin/{id}")
+    public ResponseEntity<ComputoClienteHoraFinResponse> computoClienteByIdHoraFin(@PathVariable Long id){
+        ComputoClienteHoraFinResponse response = computoClienteService.listHoraFin(id);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
+
+    @PutMapping("/updatePrestamo")
+    public ResponseEntity<?> updatePrestamo(@RequestBody ComputoClienteHoraFinRequest request) {
+        computoClienteService.updateComputoCliente(request);
+        return new ResponseEntity(new Mensaje("Prestamo Actualizado"), HttpStatus.OK);
+    }
 
 }
