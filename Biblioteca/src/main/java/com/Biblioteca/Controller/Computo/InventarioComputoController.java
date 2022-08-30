@@ -45,6 +45,12 @@ public class InventarioComputoController {
         return new ResponseEntity<>(allInventario, HttpStatus.OK);
     }
 
+    @GetMapping("/all/estado/{estado}")
+    public ResponseEntity<List<InventarioResponse>> allByEstado(@PathVariable Boolean estado){
+        List<InventarioResponse> allInventario = service.listAllInventarioByEstado(estado);
+        return new ResponseEntity<>(allInventario, HttpStatus.OK);
+    }
+
 
     @GetMapping("/id/{id}")
     public ResponseEntity<InventarioResponse> inventarioById(@PathVariable Long id){

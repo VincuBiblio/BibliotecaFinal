@@ -10,5 +10,5 @@ public interface InventarioComputoRepository extends JpaRepository<InventarioCom
 
     Optional<InventarioComputo> findByNumero(Long numero);
 
-    List<InventarioComputo> findAllByEstado(Long numero);
+    List<InventarioComputo> findAllByEstado(Boolean estado);
 }
