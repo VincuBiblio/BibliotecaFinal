@@ -7,5 +7,5 @@ import java.io.Serializable;
 @Data
 public class UsuarioRequest implements Serializable {
 
-    private String email, clave;
+    private String cedula, clave;
 }

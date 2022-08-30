@@ -77,6 +77,21 @@ public class ComputoService {
     }
 
 
+    public List<InventarioResponse> listAllInventarioByEstado(Boolean estado){
+        List<InventarioComputo> inventarioComputo = inventarioComputoRepository.findAllByEstado(estado);
+        return inventarioComputo.stream().map(request->{
+            InventarioResponse response = new InventarioResponse();
+            response.setId(request.getId());
+            response.setEstado(request.getEstado());
+            response.setProcesador(request.getProcesador());
+            response.setNumero(request.getNumero());
+            response.setRam(request.getRam());
+            response.setDiscoDuro(request.getDiscoDuro());
+            return response;
+        }).collect(Collectors.toList());
+    }
+
+
     public InventarioResponse inventarioByNumero(Long numero){
         InventarioResponse response = new InventarioResponse();
         Optional<InventarioComputo> optional = inventarioComputoRepository.findByNumero(numero);
