@@ -24,6 +24,7 @@ public class Evento implements Serializable {
     private Long id;
 
     private String descripcion;
+    private String observaciones;
 
     private String actividades;
 

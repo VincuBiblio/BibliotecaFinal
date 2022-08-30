@@ -46,6 +46,7 @@ public class EventoService {
         evento.setDescripcion(eventoRequest.getDescripcion());
         evento.setFecha(eventoRequest.getFecha());
         evento.setActividades(eventoRequest.getActividades());
+        evento.setObservaciones(eventoRequest.getObservaciones());
         evento.setUsuario(user);
         try {
             Evento  saved = eventoRepository.save(evento);
@@ -63,6 +64,7 @@ public class EventoService {
             evento.get().setDescripcion(eventoRequest.getDescripcion());
             evento.get().setFecha(eventoRequest.getFecha());
             evento.get().setActividades(eventoRequest.getActividades());
+            evento.get().setObservaciones(eventoRequest.getObservaciones());
             evento.get().setNumParticipantes(eventoRequest.getNumParticipantes());
             evento.get().setDocumento(eventoRequest.getDocumento());
             try{
@@ -82,6 +84,7 @@ public class EventoService {
         Optional<Evento> evento= eventoRepository.findById(eventoRequest.getId());
         if(evento.isPresent()){
             evento.get().setNumParticipantes(eventoRequest.getNumParticipantes());
+            evento.get().setObservaciones(eventoRequest.getObservaciones());
             evento.get().setDocumento(eventoRequest.getDocumento());
             try{
                 eventoRepository.save(evento.get());
@@ -104,6 +107,7 @@ public class EventoService {
             er.setId(cRequest.getId());
             er.setDescripcion(cRequest.getDescripcion());
             er.setActividades(cRequest.getActividades());
+            er.setObservaciones(cRequest.getObservaciones());
             er.setNumParticipantes(cRequest.getNumParticipantes());
             er.setFecha(cRequest.getFecha());
             er.setDocumento(cRequest.getDocumento());
@@ -121,6 +125,7 @@ public class EventoService {
             er.setId(cRequest.getId());
             er.setDescripcion(cRequest.getDescripcion());
             er.setActividades(cRequest.getActividades());
+            er.setObservaciones(cRequest.getObservaciones());
             er.setNumParticipantes(cRequest.getNumParticipantes());
             er.setFecha(cRequest.getFecha());
             er.setDocumento(cRequest.getDocumento());
@@ -139,6 +144,7 @@ public class EventoService {
             er.setId(cRequest.getId());
             er.setDescripcion(cRequest.getDescripcion());
             er.setActividades(cRequest.getActividades());
+            er.setObservaciones(cRequest.getObservaciones());
             er.setNumParticipantes(cRequest.getNumParticipantes());
             er.setFecha(cRequest.getFecha());
             er.setDocumento(cRequest.getDocumento());

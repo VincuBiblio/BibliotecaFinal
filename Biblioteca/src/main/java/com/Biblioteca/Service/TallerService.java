@@ -361,7 +361,7 @@ public class TallerService {
         return (BigInteger) nativeQuery.getSingleResult();
     }
     public BigInteger contarporgeneroOtro(Long id) {
-        String generoOtro="OTRO";
+        String generoOtro="OTROS";
         Query nativeQuery = entityManager.createNativeQuery("SELECT count(*) FROM taller_clientes tc " +
                 "join cliente cl on cl.id=tc.cliente_id where tc.taller_id= ? and cl.genero= ?");
         nativeQuery.setParameter(1, id);

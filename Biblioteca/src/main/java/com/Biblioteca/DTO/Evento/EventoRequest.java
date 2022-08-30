@@ -7,6 +7,7 @@ import java.util.Date;
 public class EventoRequest {
     private Long id;
     private String descripcion;
+    private String observaciones;
     private Date fecha;
     private String actividades;
     private Long numParticipantes;
