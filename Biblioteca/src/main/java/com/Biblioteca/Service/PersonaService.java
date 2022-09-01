@@ -503,12 +503,12 @@ public class PersonaService implements UserDetailsService {
     public String generateTokenSignUp(PersonaUsuarioRequest registerRequest) throws Exception {
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(registerRequest.getEmail(), registerRequest.getEmail())
+                    new UsernamePasswordAuthenticationToken(registerRequest.getCedula(), registerRequest.getCedula())
             );
         } catch (Exception ex) {
-            log.error("INVALID: error al generar token en signup de usuario con email: {}", registerRequest.getEmail());
+            log.error("INVALID: error al generar token en signup de usuario con cedula: {}", registerRequest.getCedula());
             throw new BadRequestException("INAVALID");
         }
-        return jwtUtil.generateToken(registerRequest.getEmail());
+        return jwtUtil.generateToken(registerRequest.getCedula());
     }
 }
