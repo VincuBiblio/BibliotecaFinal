@@ -9,6 +9,7 @@ import java.util.Date;
 public class TallerRequest implements Serializable {
 
     private Long id;
+    private Long idTaller;
     private String nombre;
     private String lugar;
     private String descripcion;

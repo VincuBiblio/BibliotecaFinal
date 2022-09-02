@@ -139,7 +139,7 @@ public class CursoService {
 
 
     public boolean actualizarcursosconid_curso(CursoRequest cursorequest) {
-        Optional<Curso> optionalc = cursoRepository.findById(cursorequest.getId());
+        Optional<Curso> optionalc = cursoRepository.findById(cursorequest.getIdCurso());
         if (optionalc.isPresent()) {
             optionalc.get().setActividades(cursorequest.getActividades());
             optionalc.get().setMateriales(cursorequest.getMateriales());

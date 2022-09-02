@@ -126,7 +126,7 @@ public class TallerService {
 
 
     public boolean actualizartallerconid_taller(TallerRequest tallerrequest) {
-        Optional<Taller> optionalc = tallerRepository.findById(tallerrequest.getId());
+        Optional<Taller> optionalc = tallerRepository.findById(tallerrequest.getIdTaller());
         if (optionalc.isPresent()) {
             try {
                Taller c = tallerRepository.save(optionalc.get());
