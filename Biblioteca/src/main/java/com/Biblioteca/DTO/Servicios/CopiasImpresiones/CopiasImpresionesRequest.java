@@ -7,5 +7,5 @@ import java.io.Serializable;
 @Data
 public class CopiasImpresionesRequest implements Serializable {
 
-    private Long pagBlanco, pagColor, pagTotal;
+    private Long id, pagBlanco, pagColor, pagTotal;
 }

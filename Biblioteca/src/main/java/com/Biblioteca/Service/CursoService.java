@@ -143,7 +143,12 @@ public class CursoService {
         if (optionalc.isPresent()) {
             optionalc.get().setActividades(cursorequest.getActividades());
             optionalc.get().setMateriales(cursorequest.getMateriales());
-            optionalc.get().setNumParticipantes(cursorequest.getNumParticipantes());
+            cursorequest.getNumParticipantes();
+            BigInteger nminimoparticipantes;
+            nminimoparticipantes = count1(cursorequest.getIdCurso());
+            System.out.println(nminimoparticipantes + " participantes");
+            if(cursorequest.getNumParticipantes()>=nminimoparticipantes.longValue()){
+                optionalc.get().setNumParticipantes(cursorequest.getNumParticipantes());
             try {
                 Curso c = cursoRepository.save(optionalc.get());
                 if (c != null) {
@@ -156,6 +161,10 @@ public class CursoService {
             } catch (Exception ex) {
                 throw new BadRequestException("No ACTUALIZADO" + ex);
             }
+
+        } else {
+            throw new BadRequestException("El NUMERO DE PARTICIPANTES NO PUEDE SER MENOR A LOS "+nminimoparticipantes.longValue()+" INSCRITOS ACTUALMENTE");
+        }
         } else {
             throw new BadRequestException("NO EXISTE EL CURSO CON ID " + cursorequest.getId());
         }

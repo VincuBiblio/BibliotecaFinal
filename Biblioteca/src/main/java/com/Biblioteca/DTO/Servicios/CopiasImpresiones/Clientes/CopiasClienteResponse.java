@@ -7,6 +7,7 @@ import java.util.Date;
 
 @Data
 public class CopiasClienteResponse implements Serializable {
+    private Long id;
 
     private Date fechaEntrega;
 
@@ -16,12 +17,17 @@ public class CopiasClienteResponse implements Serializable {
 
     private Long pagBlanco, pagColor, pagTotal;
 
-    public CopiasClienteResponse(Date fechaEntrega, Long idCliente, Long idCopias, Long pagBlanco, Long pagColor, Long pagTotal) {
+    public CopiasClienteResponse(Long id,Date fechaEntrega, Long idCliente, Long idCopias, Long pagBlanco, Long pagColor, Long pagTotal) {
+        this.id=id;
         this.fechaEntrega = fechaEntrega;
         this.idCliente = idCliente;
         this.idCopias = idCopias;
         this.pagBlanco = pagBlanco;
         this.pagColor = pagColor;
         this.pagTotal = pagTotal;
+    }
+
+    public CopiasClienteResponse() {
+
     }
 }

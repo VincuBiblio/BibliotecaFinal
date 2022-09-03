@@ -1,9 +1,15 @@
 package com.Biblioteca.Service.Copias;
 
 
+import com.Biblioteca.DTO.CursoTaller.CursoRequest;
+import com.Biblioteca.DTO.CursoTaller.CursoResponse;
 import com.Biblioteca.DTO.Servicios.CopiasImpresiones.Clientes.CopiasClienteRequest;
 import com.Biblioteca.DTO.Servicios.CopiasImpresiones.Clientes.CopiasClienteResponse;
+import com.Biblioteca.DTO.Servicios.CopiasImpresiones.CopiasImpresionesRequest;
 import com.Biblioteca.Exceptions.BadRequestException;
+import com.Biblioteca.Exceptions.ResponseNotFoundException;
+import com.Biblioteca.Models.CursoTaller.Curso.Curso;
+import com.Biblioteca.Models.CursoTaller.CursoTaller;
 import com.Biblioteca.Models.Persona.Cliente;
 import com.Biblioteca.Models.Servicio.CopiasImpresiones.CopiasCliente;
 import com.Biblioteca.Models.Servicio.CopiasImpresiones.CopiasImpresiones;
@@ -12,10 +18,18 @@ import com.Biblioteca.Repository.CopiasImpresiones.CopiasImpresionesRepository;
 import com.Biblioteca.Repository.Persona.ClienteRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.math.BigInteger;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -46,14 +60,14 @@ public class CopiasService {
                    Optional<CopiasImpresiones> copiasImpres= copiasImpresionesRepository.findById(copias.getId());
                    if(copiasImpres.isPresent()){
                        CopiasCliente newCopiasCliente = new CopiasCliente();
-                       newCopiasCliente.setDia((long)request.getFecha().getDate()+1);
+                       newCopiasCliente.setDia((long)request.getFecha().getDate());
                        newCopiasCliente.setMes((long)request.getFecha().getMonth()+1);
                        newCopiasCliente.setAnio((long) request.getFecha().getYear()+1900);
                        newCopiasCliente.setCliente(cliente.get());
                        newCopiasCliente.setCopias(copias);
                        try{
                            copiasClientesRepository.save(newCopiasCliente);
-                           return new CopiasClienteResponse(request.getFecha(), cliente.get().getId(),
+                           return new CopiasClienteResponse(newCopiasCliente.getId(),request.getFecha(), cliente.get().getId(),
                                    copias.getId(), copias.getPagBlanco(), copias.getPagColor(), copias.getPagTotal());
                        }catch (Exception e){
                            throw new BadRequestException("No se guardó el cliente que ocupó servicio copias tbl copias_cliente" +e);
@@ -62,12 +76,143 @@ public class CopiasService {
                        throw new BadRequestException("No existe las copias con id" +copias.getId());
                    }
                }
-
-
         }else{
             throw new BadRequestException("No existe un cliente con id" +request.getIdCliente());
         }
-
         return null;
     }
+
+
+
+    public boolean actualizarcopias(CopiasClienteRequest crequest) {
+        Optional<Cliente> cliente = clienteRepository.findById(crequest.getIdCliente());
+        Optional<CopiasCliente> optionalc = copiasClientesRepository.findById(crequest.getId());
+        if (optionalc.isPresent()) {
+            optionalc.get().setDia((long)crequest.getFecha().getDate());
+            optionalc.get().setMes((long)crequest.getFecha().getMonth()+1);
+            optionalc.get().setAnio((long)crequest.getFecha().getYear()+1900);
+            optionalc.get().setCliente(cliente.get());
+            try {
+                CopiasCliente c = copiasClientesRepository.save(optionalc.get());
+                if (c != null) {
+                    guardaractualizacioncopias(c.getCopias().getId(), crequest.getPagBlanco(), crequest.getPagColor());
+                } else {
+                    throw new BadRequestException("NO SE ACTUALIZO");
+                }
+            } catch (Exception ex) {
+                throw new BadRequestException("REGISTRO NO ACTUALIZADO" + ex);
+            }
+        } else {
+            throw new BadRequestException("NO EXISTE LA COPIA/IMPRESION CON ID " + crequest.getId());
+        }
+        return false;
+    }
+
+    private boolean guardaractualizacioncopias(Long idcopia,Long pagBlanco,Long pagColor) {
+        Optional<CopiasImpresiones> optionalc = copiasImpresionesRepository.findById(idcopia);
+        if (optionalc.isPresent()) {
+            optionalc.get().setPagBlanco(pagBlanco);
+            optionalc.get().setPagColor(pagColor);
+            optionalc.get().setPagTotal(pagColor+ pagBlanco);
+            try {
+                CopiasImpresiones c = copiasImpresionesRepository.save(optionalc.get());
+                return true;
+            } catch (Exception ex) {
+                throw new BadRequestException("NO SE ACTUALIZO LA TABLA COPIAS/IMPRESIONES" + ex);
+            }
+        }
+        throw new BadRequestException("NO EXISTE EL REGISTRO DE COPIA/IMPRESION");
+    }
+
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public List<CopiasClienteResponse> listAllCopias() {
+        List<CopiasCliente> copias = copiasClientesRepository.findAll();
+        return copias.stream().map(cRequest -> {
+            CopiasClienteResponse cr = new CopiasClienteResponse();
+            cr.setId(cRequest.getId());
+            cr.setIdCliente(cRequest.getCliente().getId());
+            cr.setIdCopias(cRequest.getCopias().getId());
+            cr.setPagBlanco(cRequest.getCopias().getPagBlanco());
+            cr.setPagColor(cRequest.getCopias().getPagColor());
+            cr.setPagTotal(cRequest.getCopias().getPagTotal());
+            cr.setFechaEntrega(ParseFecha(cRequest.getDia()+"",cRequest.getMes()+"",cRequest.getAnio()+""));
+            return cr;
+        }).collect(Collectors.toList());
+    }
+
+
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public CopiasClienteResponse listarbyIdCopiacliente(Long id) {
+        CopiasClienteResponse cr = new CopiasClienteResponse();
+        Optional<CopiasCliente> ccli  = copiasClientesRepository.findById(id);
+        if (ccli.isPresent()) {
+            Optional<CopiasImpresiones> ci = copiasImpresionesRepository.findById(ccli.get().getCopias().getId());
+            if (ci.isPresent()) {
+                cr.setId(ccli.get().getId());
+                cr.setIdCliente(ccli.get().getCliente().getId());
+                cr.setFechaEntrega(ParseFecha(ccli.get().getDia()+"",ccli.get().getMes()+"",ccli.get().getAnio()+""));
+                cr.setIdCopias(ci.get().getId());
+                cr.setPagColor(ci.get().getPagColor());
+                cr.setPagBlanco(ci.get().getPagBlanco());
+                cr.setPagBlanco(ci.get().getPagBlanco());
+                cr.setPagTotal(ci.get().getPagTotal());
+                return cr;
+            } else {
+                throw new BadRequestException("NO EXISTE UN REGISTRO DE COPIAS EN LA TABLA COPIAS/IMPRESIONES");
+            }
+        } else {
+            throw new BadRequestException("NO EXISTE EL REGISTRO CON ID " + id);
+        }
+    }
+    public static Date ParseFecha(String dia,String mes,String anio){
+        String fecha= dia+"/"+mes+"/"+anio;
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+        Date fechaDate = null;
+        try {
+            fechaDate = formato.parse(fecha);
+        }
+        catch (ParseException ex)
+        {
+            System.out.println(ex);
+        }
+        return fechaDate;
+    }
+
+
+
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public List<CopiasClienteResponse> listarbymesandanio(Long mes, Long anio) {
+        List<CopiasCliente> copias = copiasClientesRepository.findByMesAndAnio(mes,anio);
+        if(!copias.isEmpty()){
+        return copias.stream().map(cRequest -> {
+            CopiasClienteResponse cr = new CopiasClienteResponse();
+            cr.setId(cRequest.getId());
+            cr.setIdCliente(cRequest.getCliente().getId());
+            cr.setIdCopias(cRequest.getCopias().getId());
+            cr.setPagBlanco(cRequest.getCopias().getPagBlanco());
+            cr.setPagColor(cRequest.getCopias().getPagColor());
+            cr.setPagTotal(cRequest.getCopias().getPagTotal());
+            cr.setFechaEntrega(ParseFecha(cRequest.getDia()+"",cRequest.getMes()+"",cRequest.getAnio()+""));
+            return cr;
+        }).collect(Collectors.toList());
+        }
+        throw new BadRequestException("NO EXISTEN COPIAS EN LA FECHA ESPECIFICADA");
+    }
+
+    public void deleteById(Long id) {
+        Optional<CopiasCliente> optional = copiasClientesRepository.findById(id);
+        if (optional.isPresent()) {
+            Optional<CopiasImpresiones> optionalci = copiasImpresionesRepository.findById(optional.get().getCopias().getId());
+            if (optionalci.isPresent()) {
+                copiasClientesRepository.deleteById(id);
+                copiasImpresionesRepository.deleteById(optional.get().getCopias().getId());
+            } else {
+                throw new BadRequestException("El registro de copias/impresiones con el id " + id + ", no existe");
+            }
+        } else {
+            throw new BadRequestException("El registro de copias cliente con el id " + id + ", no existe");
+        }
+    }
+
+
 }

@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -34,6 +35,10 @@ public class CursoTaller implements Serializable {
 //    private String observaciones;
 
     private String responsable;
+
+
+
+
 
     @Column(name = "fecha_inicio")
     @Temporal(TemporalType.DATE)
