@@ -60,6 +60,7 @@ public class CopiasService {
                    Optional<CopiasImpresiones> copiasImpres= copiasImpresionesRepository.findById(copias.getId());
                    if(copiasImpres.isPresent()){
                        CopiasCliente newCopiasCliente = new CopiasCliente();
+                       newCopiasCliente.setFecha_actual(request.getFecha());
                        newCopiasCliente.setDia((long)request.getFecha().getDate());
                        newCopiasCliente.setMes((long)request.getFecha().getMonth()+1);
                        newCopiasCliente.setAnio((long) request.getFecha().getYear()+1900);
@@ -88,6 +89,7 @@ public class CopiasService {
         Optional<Cliente> cliente = clienteRepository.findById(crequest.getIdCliente());
         Optional<CopiasCliente> optionalc = copiasClientesRepository.findById(crequest.getId());
         if (optionalc.isPresent()) {
+            optionalc.get().setFecha_actual(crequest.getFecha());
             optionalc.get().setDia((long)crequest.getFecha().getDate());
             optionalc.get().setMes((long)crequest.getFecha().getMonth()+1);
             optionalc.get().setAnio((long)crequest.getFecha().getYear()+1900);

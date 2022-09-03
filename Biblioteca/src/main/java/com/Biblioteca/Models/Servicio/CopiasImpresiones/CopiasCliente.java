@@ -23,6 +23,9 @@ public class CopiasCliente implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "fecha_actual")
+    @Temporal(TemporalType.DATE)
+    private Date fecha_actual;
 
 
     private Long dia, mes, anio;
