@@ -190,6 +190,11 @@ public class CopiasService {
             CopiasClienteResponse cr = new CopiasClienteResponse();
             cr.setId(cRequest.getId());
             cr.setIdCliente(cRequest.getCliente().getId());
+            /////
+            cr.setCedula(cRequest.getCliente().getPersona().getCedula());
+            cr.setNombre(cRequest.getCliente().getPersona().getNombres());
+            cr.setApellido(cRequest.getCliente().getPersona().getApellidos());
+
             cr.setIdCopias(cRequest.getCopias().getId());
             cr.setPagBlanco(cRequest.getCopias().getPagBlanco());
             cr.setPagColor(cRequest.getCopias().getPagColor());

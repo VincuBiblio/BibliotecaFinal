@@ -12,7 +12,7 @@ public class CopiasClienteResponse implements Serializable {
     private Date fechaEntrega;
 
     private Long idCliente;
-
+    private String cedula, nombre,apellido;
     private Long idCopias;
 
     private Long pagBlanco, pagColor, pagTotal;
