@@ -1,5 +1,6 @@
 package com.Biblioteca.Service.Libros;
 
+import com.Biblioteca.DTO.Servicios.PrestamoLibros.Clientes.PrestamoLibrosEstadoRequest;
 import com.Biblioteca.DTO.Servicios.PrestamoLibros.PrestamoLibrosRequest;
 import com.Biblioteca.DTO.Servicios.PrestamoLibros.PrestamoLibrosResponse;
 import com.Biblioteca.Exceptions.BadRequestException;
@@ -40,9 +41,26 @@ public class LibrosService {
         }
     }
 
-    public boolean updateLibro(PrestamoLibrosRequest request) {
+    public boolean updateLibro(PrestamoLibrosEstadoRequest request) {
         Optional<PrestamoLibros> optional = prestamoLibrosRepository.findById(request.getId());
         if (optional.isPresent()) {
+            optional.get().setEstado(request.getEstado());
+            try {
+                prestamoLibrosRepository.save(optional.get());
+                return true;
+            } catch (Exception ex) {
+                throw new BadRequestException("No se actualizó el estado de libro" + ex);
+            }
+        } else {
+            throw new BadRequestException("No existe el libro" + request.getId());
+
+        }
+    }
+
+    public boolean updateLibroAllAtributos(PrestamoLibrosRequest request) {
+        Optional<PrestamoLibros> optional = prestamoLibrosRepository.findById(request.getId());
+        if (optional.isPresent()) {
+            optional.get().setCodigoLibro(request.getCodigoLibro());
             optional.get().setEstado(request.getEstado());
             try {
                 prestamoLibrosRepository.save(optional.get());
@@ -93,5 +111,17 @@ public class LibrosService {
             throw new BadRequestException("No existe el libro" + id);
         }
     }
+
+    public List<PrestamoLibrosResponse> listAllLibrosByEstado(){
+        List<PrestamoLibros> lista = prestamoLibrosRepository.findAllByEstado(true);
+        return lista.stream().map(libro->{
+            PrestamoLibrosResponse response = new PrestamoLibrosResponse();
+            response.setId(libro.getId());
+            response.setCodigoLibro(libro.getCodigoLibro());
+            response.setEstado(libro.getEstado());
+            return response;
+        }).collect(Collectors.toList());
+    }
+
 
 }

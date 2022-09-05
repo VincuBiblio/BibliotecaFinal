@@ -1,6 +1,7 @@
 package com.Biblioteca.Controller.PrestamoLibros;
 
 
+import com.Biblioteca.DTO.Servicios.PrestamoLibros.Clientes.PrestamoLibrosEstadoRequest;
 import com.Biblioteca.DTO.Servicios.PrestamoLibros.PrestamoLibrosRequest;
 import com.Biblioteca.DTO.Servicios.PrestamoLibros.PrestamoLibrosResponse;
 import com.Biblioteca.Exceptions.Mensaje;
@@ -27,14 +28,26 @@ public class LibrosController {
     }
 
 
-    @PutMapping
-    public ResponseEntity<?> update(@RequestBody PrestamoLibrosRequest request){
+    @PutMapping("/estado/libro")
+    public ResponseEntity<?> update(@RequestBody PrestamoLibrosEstadoRequest request){
         librosService.updateLibro(request);
+        return new ResponseEntity(new Mensaje("Estado de Libro Actualizado"), HttpStatus.OK);
+    }
+
+    @PutMapping("/libro")
+    public ResponseEntity<?> updateAllAtributos(@RequestBody PrestamoLibrosRequest request){
+        librosService.updateLibroAllAtributos(request);
         return new ResponseEntity(new Mensaje("Libro Actualizado"), HttpStatus.OK);
     }
     @GetMapping("/all")
     public ResponseEntity<List<PrestamoLibrosResponse>>listLibros(){
         List<PrestamoLibrosResponse> libros =librosService.listAllLibros();
+        return new ResponseEntity<List<PrestamoLibrosResponse>>(libros,HttpStatus.OK);
+    }
+
+    @GetMapping("/all/estado")
+    public ResponseEntity<List<PrestamoLibrosResponse>>listLibrosEstadoTrue(){
+        List<PrestamoLibrosResponse> libros =librosService.listAllLibrosByEstado();
         return new ResponseEntity<List<PrestamoLibrosResponse>>(libros,HttpStatus.OK);
     }
 
