@@ -78,14 +78,11 @@ public class LibrosClientesService {
                 if (libro.isPresent()) {
                     if (!libro.get().getEstado()) {
 
-                        optional.get().setDiaPrestamo((long) request.getFechaEntrega().getDate() + 1);
-                        optional.get().setMesPrestamo((long) request.getFechaEntrega().getMonth() + 1);
-                        optional.get().setAnioPrestamo((long) request.getFechaEntrega().getYear() + 1900);
+
                         optional.get().setDiaDev((long) request.getFechaDev().getDate()+1);
                         optional.get().setMesDev((long) request.getFechaDev().getMonth() + 1);
                         optional.get().setAnioDev((long) request.getFechaDev().getYear() + 1900);
-                        optional.get().setCliente(cliente.get());
-                        optional.get().setPrestamo(libro.get());
+
                         try {
                             PrestamoLibroCliente p=libroClienteRepository.save(optional.get());
                             return true;
