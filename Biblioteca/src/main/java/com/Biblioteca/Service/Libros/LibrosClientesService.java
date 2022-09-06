@@ -98,7 +98,6 @@ public class LibrosClientesService {
                 } else {
                     throw new BadRequestException("No existe un libro con id" + request.getIdLibro());
                 }
-
             } else {
                 throw new BadRequestException("No existe cliente con id" + request.getIdCliente());
             }
