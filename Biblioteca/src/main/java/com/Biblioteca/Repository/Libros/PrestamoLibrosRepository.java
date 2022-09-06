@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface PrestamoLibrosRepository extends JpaRepository<PrestamoLibros, Long> {
 
-    Optional<PrestamoLibros> findByCodigoLibro(String codigo);
+    Optional<PrestamoLibros> findByCodigoLibroLikeIgnoreCase(String codigo);
 
     List<PrestamoLibros> findAllByEstado(Boolean estado);
 }
