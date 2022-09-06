@@ -1,6 +1,7 @@
 package com.Biblioteca.Controller.PrestamoLibros;
 
 
+import com.Biblioteca.DTO.Computo.InventarioRequest;
 import com.Biblioteca.DTO.Servicios.PrestamoLibros.Clientes.LibrosClientesRequest;
 import com.Biblioteca.Exceptions.Mensaje;
 import com.Biblioteca.Service.Libros.LibrosClientesService;
@@ -21,5 +22,11 @@ public class ClienteLibroController {
     public ResponseEntity<?> create(@RequestBody LibrosClientesRequest request){
         librosClientesService.registroPrestamos(request);
         return new ResponseEntity(new Mensaje("Libro-Cliente Creado"), HttpStatus.CREATED);
+    }
+
+
+    @PutMapping
+    public ResponseEntity<?> actualizar(@RequestBody LibrosClientesRequest request){
+        return new ResponseEntity<>(librosClientesService.updatePrestamo(request), HttpStatus.OK);
     }
 }
