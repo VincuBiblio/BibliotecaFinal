@@ -77,6 +77,7 @@ public class LibrosClientesService {
                 Optional<PrestamoLibros> libro = prestamoLibrosRepository.findById(request.getIdLibro());
                 if (libro.isPresent()) {
                     if (!libro.get().getEstado()) {
+
                         optional.get().setDiaPrestamo((long) request.getFechaEntrega().getDate() + 1);
                         optional.get().setMesPrestamo((long) request.getFechaEntrega().getMonth() + 1);
                         optional.get().setAnioPrestamo((long) request.getFechaEntrega().getYear() + 1900);
