@@ -24,11 +24,17 @@ public class PrestamoLibroCliente implements Serializable {
     private Long id;
 
 
-    private Long dia;
+    private Long diaPrestamo;
 
-    private Long mes;
+    private Long mesPrestamo;
 
-    private Long anio;
+    private Long anioPrestamo;
+
+    private Long diaDev;
+
+    private Long mesDev;
+
+    private Long anioDev;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "id_cliente",referencedColumnName = "id")

@@ -10,6 +10,8 @@ public class LibrosClientesResponse implements Serializable {
 
     private Date fechaEntrega;
 
+    private Date fechaDev;
+
     private Long idCliente;
 
     private Long idLibro;
