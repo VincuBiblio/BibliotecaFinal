@@ -24,7 +24,7 @@ public class LibrosService {
 
     @Transactional
     public boolean registroLibros(PrestamoLibrosRequest request){
-        Optional<PrestamoLibros> optional = prestamoLibrosRepository.findByCodigoLibroLikeIgnoreCase(request.getCodigoLibro());
+        Optional<PrestamoLibros> optional = prestamoLibrosRepository.findByCodigoLibro(request.getCodigoLibro());
         if (optional.isPresent()) {
             PrestamoLibros newLibro = new PrestamoLibros();
             newLibro.setCodigoLibro(request.getCodigoLibro());
@@ -87,7 +87,7 @@ public class LibrosService {
 
     public PrestamoLibrosResponse listLibrosByCodigo(String codigo){
         PrestamoLibrosResponse response = new PrestamoLibrosResponse();
-        Optional<PrestamoLibros> libro = prestamoLibrosRepository.findByCodigoLibroLikeIgnoreCase(codigo);
+        Optional<PrestamoLibros> libro = prestamoLibrosRepository.findByCodigoLibro(codigo);
         if(libro.isPresent()){
             response.setId(libro.get().getId());
             response.setCodigoLibro(libro.get().getCodigoLibro());
