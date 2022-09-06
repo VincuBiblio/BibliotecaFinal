@@ -72,12 +72,6 @@ public class LibrosClientesService {
     public boolean updatePrestamo(LibrosClientesRequest request){
         Optional<PrestamoLibroCliente> optional = libroClienteRepository.findById(request.getIdPrestao());
         if (optional.isPresent()){
-            Optional<Cliente> cliente = clienteRepository.findById(request.getIdCliente());
-            if (cliente.isPresent()) {
-                Optional<PrestamoLibros> libro = prestamoLibrosRepository.findById(request.getIdLibro());
-                if (libro.isPresent()) {
-                    if (!libro.get().getEstado()) {
-
 
                         optional.get().setDiaDev((long) request.getFechaDev().getDate()+1);
                         optional.get().setMesDev((long) request.getFechaDev().getMonth() + 1);
@@ -89,21 +83,12 @@ public class LibrosClientesService {
                         } catch (Exception ex) {
                             throw new BadRequestException("No se actualizo el cliente/libro" + ex);
                         }
-                    } else {
-                        new Mensaje("El libro está en préstamo");
 
-                    }
-                } else {
-                    throw new BadRequestException("No existe un libro con id" + request.getIdLibro());
-                }
 
-            } else {
-                throw new BadRequestException("No existe cliente con id" + request.getIdCliente());
-            }
+
         }else {
             throw new BadRequestException("No existe prestamo con id" + request.getIdPrestao());
         }
-        return false;
 
     }
 
