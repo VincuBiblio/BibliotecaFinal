@@ -107,7 +107,6 @@ public class LibrosClientesService {
             throw new BadRequestException("No existe prestamo con id" + request.getIdPrestao());
         }
         return false;
-
     }
 
 
