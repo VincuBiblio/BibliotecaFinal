@@ -21,7 +21,7 @@ public class LibrosController {
     @Autowired
     private LibrosService librosService;
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody PrestamoLibrosRequest request){
         librosService.registroLibros(request);
         return new ResponseEntity(new Mensaje("Libro Creado"), HttpStatus.CREATED);

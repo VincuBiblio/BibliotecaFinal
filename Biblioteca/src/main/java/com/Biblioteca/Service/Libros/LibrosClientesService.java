@@ -42,11 +42,16 @@ public class LibrosClientesService {
         if (cliente.isPresent()) {
             Optional<PrestamoLibros> libro = prestamoLibrosRepository.findById(request.getIdLibro());
             if (libro.isPresent()) {
-                if (!libro.get().getEstado()) {
+                if (libro.get().getEstado()==false) {
                     PrestamoLibroCliente newLibroCliente = new PrestamoLibroCliente();
-                    newLibroCliente.setDiaPrestamo((long) request.getFechaEntrega().getDate() + 1);
+                    newLibroCliente.setDiaPrestamo((long) request.getFechaEntrega().getDate());
                     newLibroCliente.setMesPrestamo((long) request.getFechaEntrega().getMonth() + 1);
                     newLibroCliente.setAnioPrestamo((long) request.getFechaEntrega().getYear() + 1900);
+
+                    newLibroCliente.setDiaDev((long) request.getFechaDev().getDate());
+                    newLibroCliente.setMesDev((long) request.getFechaDev().getMonth() + 1);
+                    newLibroCliente.setAnioDev((long) request.getFechaDev().getYear() + 1900);
+
                     newLibroCliente.setCliente(cliente.get());
                     newLibroCliente.setPrestamo(libro.get());
                     try {
@@ -76,12 +81,12 @@ public class LibrosClientesService {
             if (cliente.isPresent()) {
                 Optional<PrestamoLibros> libro = prestamoLibrosRepository.findById(request.getIdLibro());
                 if (libro.isPresent()) {
-                    if (!libro.get().getEstado()) {
+                    if (libro.get().getEstado()==false) {
 
-                        optional.get().setDiaPrestamo((long) request.getFechaEntrega().getDate() + 1);
+                        optional.get().setDiaPrestamo((long) request.getFechaEntrega().getDate());
                         optional.get().setMesPrestamo((long) request.getFechaEntrega().getMonth() + 1);
                         optional.get().setAnioPrestamo((long) request.getFechaEntrega().getYear() + 1900);
-                        optional.get().setDiaDev((long) request.getFechaDev().getDate()+1);
+                        optional.get().setDiaDev((long) request.getFechaDev().getDate());
                         optional.get().setMesDev((long) request.getFechaDev().getMonth() + 1);
                         optional.get().setAnioDev((long) request.getFechaDev().getYear() + 1900);
                         optional.get().setCliente(cliente.get());

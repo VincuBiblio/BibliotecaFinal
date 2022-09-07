@@ -25,7 +25,7 @@ public class LibrosService {
     @Transactional
     public boolean registroLibros(PrestamoLibrosRequest request){
         Optional<PrestamoLibros> optional = prestamoLibrosRepository.findByCodigoLibroLikeIgnoreCase(request.getCodigoLibro());
-        if (optional.isPresent()) {
+        if (!optional.isPresent()) {
             PrestamoLibros newLibro = new PrestamoLibros();
             newLibro.setCodigoLibro(request.getCodigoLibro());
             newLibro.setEstado(request.getEstado());

@@ -18,14 +18,14 @@ public class ClienteLibroController {
     @Autowired
     private LibrosClientesService librosClientesService;
 
-    @PostMapping
+    @PostMapping("/registroprestamos")
     public ResponseEntity<?> create(@RequestBody LibrosClientesRequest request){
         librosClientesService.registroPrestamos(request);
         return new ResponseEntity(new Mensaje("Libro-Cliente Creado"), HttpStatus.CREATED);
     }
 
 
-    @PutMapping
+    @PutMapping("/actualizarregistroprestamos")
     public ResponseEntity<?> actualizar(@RequestBody LibrosClientesRequest request){
         return new ResponseEntity<>(librosClientesService.updatePrestamo(request), HttpStatus.OK);
     }
