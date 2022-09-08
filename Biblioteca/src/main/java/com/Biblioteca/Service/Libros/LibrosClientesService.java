@@ -91,6 +91,7 @@ public class LibrosClientesService {
                         optional.get().setObservacionesDev(request.getObservacionesDev());
                         optional.get().setCliente(cliente.get());
                         optional.get().setPrestamo(libro.get());
+
                         try {
                             PrestamoLibroCliente p=libroClienteRepository.save(optional.get());
                             return true;
