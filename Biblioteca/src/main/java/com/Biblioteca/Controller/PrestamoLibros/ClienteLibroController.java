@@ -1,10 +1,9 @@
 package com.Biblioteca.Controller.PrestamoLibros;
 
 
-import com.Biblioteca.DTO.Computo.InventarioRequest;
 import com.Biblioteca.DTO.Servicios.PrestamoLibros.Clientes.LibrosClientesRequest;
-import com.Biblioteca.DTO.Servicios.PrestamoLibros.Clientes.ListaLibrosPrestamo;
 import com.Biblioteca.Exceptions.Mensaje;
+import com.Biblioteca.Repository.Libros.ListaLibrosPrestamo;
 import com.Biblioteca.Service.Libros.LibrosClientesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,9 +32,9 @@ public class ClienteLibroController {
         return new ResponseEntity<>(librosClientesService.updatePrestamo(request), HttpStatus.OK);
     }
 
-    @GetMapping("/lista/librosenprestamo/{estado}")
-         public ResponseEntity<List<ListaLibrosPrestamo>> listAllLIbrosEnPrestamo(@PathVariable Boolean estado){
-        List<ListaLibrosPrestamo> lista = librosClientesService.listaLbrosEnPrestamo(estado);
+    @GetMapping("/lista/librosenprestamo")
+         public ResponseEntity<List<ListaLibrosPrestamo>> listAllLIbrosEnPrestamo(){
+        List<ListaLibrosPrestamo> lista = librosClientesService.listaLbrosEnPrestamo();
         return new ResponseEntity<>(lista, HttpStatus.OK);
     }
 }

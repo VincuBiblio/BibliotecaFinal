@@ -2,13 +2,13 @@ package com.Biblioteca.Service.Libros;
 
 
 import com.Biblioteca.DTO.Servicios.PrestamoLibros.Clientes.LibrosClientesRequest;
-import com.Biblioteca.DTO.Servicios.PrestamoLibros.Clientes.ListaLibrosPrestamo;
 import com.Biblioteca.Exceptions.BadRequestException;
 import com.Biblioteca.Exceptions.Mensaje;
 import com.Biblioteca.Models.Persona.Cliente;
 import com.Biblioteca.Models.Servicio.PrestamoLibros.PrestamoLibroCliente;
 import com.Biblioteca.Models.Servicio.PrestamoLibros.PrestamoLibros;
 import com.Biblioteca.Repository.Libros.LibroClienteRepository;
+import com.Biblioteca.Repository.Libros.ListaLibrosPrestamo;
 import com.Biblioteca.Repository.Libros.PrestamoLibrosRepository;
 import com.Biblioteca.Repository.Persona.ClienteRepository;
 import com.Biblioteca.Repository.Persona.PersonaRepository;
@@ -119,8 +119,8 @@ public class LibrosClientesService {
     }
 
     @Transactional
-    public List<ListaLibrosPrestamo> listaLbrosEnPrestamo(Boolean estado){
-        return libroClienteRepository.findAllByEstado(estado);
+    public List<ListaLibrosPrestamo> listaLbrosEnPrestamo(){
+        return libroClienteRepository.findAllByEstado(false);
     }
 
 
