@@ -46,7 +46,7 @@ public class LibrosController {
     }
 
     @GetMapping("/all/estado")
-    public ResponseEntity<List<PrestamoLibrosResponse>>listLibrosEstadoTrue(){
+    public ResponseEntity<List<PrestamoLibrosResponse>>listLibrosEstadoFalse(){
         List<PrestamoLibrosResponse> libros =librosService.listAllLibrosByEstado();
         return new ResponseEntity<List<PrestamoLibrosResponse>>(libros,HttpStatus.OK);
     }
@@ -55,6 +55,7 @@ public class LibrosController {
     public ResponseEntity<PrestamoLibrosResponse> listLibroId(@PathVariable Long id) {
         PrestamoLibrosResponse ser = librosService.listAllLibrosById(id);
         return new ResponseEntity<>(ser, HttpStatus.OK);
+
     }
 
     @GetMapping("/byCodigo/{codigo}")

@@ -2,6 +2,7 @@ package com.Biblioteca.Service.Libros;
 
 
 import com.Biblioteca.DTO.Servicios.PrestamoLibros.Clientes.LibrosClientesRequest;
+import com.Biblioteca.DTO.Servicios.PrestamoLibros.Clientes.ListaLibrosPrestamo;
 import com.Biblioteca.Exceptions.BadRequestException;
 import com.Biblioteca.Exceptions.Mensaje;
 import com.Biblioteca.Models.Persona.Cliente;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -115,6 +117,12 @@ public class LibrosClientesService {
         return false;
 
     }
+
+    @Transactional
+    public List<ListaLibrosPrestamo> listaLbrosEnPrestamo(Boolean estado){
+        return libroClienteRepository.findAllByEstado(estado);
+    }
+
 
 
 

@@ -3,12 +3,15 @@ package com.Biblioteca.Controller.PrestamoLibros;
 
 import com.Biblioteca.DTO.Computo.InventarioRequest;
 import com.Biblioteca.DTO.Servicios.PrestamoLibros.Clientes.LibrosClientesRequest;
+import com.Biblioteca.DTO.Servicios.PrestamoLibros.Clientes.ListaLibrosPrestamo;
 import com.Biblioteca.Exceptions.Mensaje;
 import com.Biblioteca.Service.Libros.LibrosClientesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @CrossOrigin(origins= {"http://localhost:4200"})
 @RestController
@@ -28,5 +31,11 @@ public class ClienteLibroController {
     @PutMapping("/actualizarregistroprestamos")
     public ResponseEntity<?> actualizar(@RequestBody LibrosClientesRequest request){
         return new ResponseEntity<>(librosClientesService.updatePrestamo(request), HttpStatus.OK);
+    }
+
+    @GetMapping("/lista/librosenprestamo/{estado}")
+         public ResponseEntity<List<ListaLibrosPrestamo>> listAllLIbrosEnPrestamo(@PathVariable Boolean estado){
+        List<ListaLibrosPrestamo> lista = librosClientesService.listaLbrosEnPrestamo(estado);
+        return new ResponseEntity<>(lista, HttpStatus.OK);
     }
 }

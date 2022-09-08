@@ -113,7 +113,7 @@ public class LibrosService {
     }
 
     public List<PrestamoLibrosResponse> listAllLibrosByEstado(){
-        List<PrestamoLibros> lista = prestamoLibrosRepository.findAllByEstado(true);
+        List<PrestamoLibros> lista = prestamoLibrosRepository.findAllByEstado(false);
         return lista.stream().map(libro->{
             PrestamoLibrosResponse response = new PrestamoLibrosResponse();
             response.setId(libro.getId());
