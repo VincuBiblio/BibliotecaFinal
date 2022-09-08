@@ -36,6 +36,10 @@ public class PrestamoLibroCliente implements Serializable {
 
     private Long anioDev;
 
+    private String observacionesEntrega;
+
+    private String observacionesDev;
+
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "id_cliente",referencedColumnName = "id")
     private Cliente cliente;

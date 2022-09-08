@@ -47,11 +47,10 @@ public class LibrosClientesService {
                     newLibroCliente.setDiaPrestamo((long) request.getFechaEntrega().getDate());
                     newLibroCliente.setMesPrestamo((long) request.getFechaEntrega().getMonth() + 1);
                     newLibroCliente.setAnioPrestamo((long) request.getFechaEntrega().getYear() + 1900);
-
                     newLibroCliente.setDiaDev((long) request.getFechaDev().getDate());
                     newLibroCliente.setMesDev((long) request.getFechaDev().getMonth() + 1);
                     newLibroCliente.setAnioDev((long) request.getFechaDev().getYear() + 1900);
-
+                    newLibroCliente.setObservacionesEntrega(request.getObservacionesEntrega());
                     newLibroCliente.setCliente(cliente.get());
                     newLibroCliente.setPrestamo(libro.get());
                     try {
@@ -61,7 +60,7 @@ public class LibrosClientesService {
                         throw new BadRequestException("No se guardó el cliente/libro" + ex);
                     }
                 } else {
-                    new Mensaje("El libro está en préstamo");
+                   throw new BadRequestException("El libro está en préstamo");
 
                 }
             } else {
@@ -71,7 +70,6 @@ public class LibrosClientesService {
         } else {
             throw new BadRequestException("No existe cliente con id" + request.getIdCliente());
         }
-        return false;
     }
 
     public boolean updatePrestamo(LibrosClientesRequest request){
@@ -89,6 +87,8 @@ public class LibrosClientesService {
                         optional.get().setDiaDev((long) request.getFechaDev().getDate());
                         optional.get().setMesDev((long) request.getFechaDev().getMonth() + 1);
                         optional.get().setAnioDev((long) request.getFechaDev().getYear() + 1900);
+                        optional.get().setObservacionesEntrega(request.getObservacionesEntrega());
+                        optional.get().setObservacionesDev(request.getObservacionesDev());
                         optional.get().setCliente(cliente.get());
                         optional.get().setPrestamo(libro.get());
                         try {

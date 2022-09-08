@@ -15,4 +15,8 @@ public class LibrosClientesResponse implements Serializable {
     private Long idCliente;
 
     private Long idLibro;
+
+    private String observacionesEntrega;
+
+    private String observacionesDev;
 }
