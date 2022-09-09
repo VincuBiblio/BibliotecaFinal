@@ -30,4 +30,6 @@ public interface ListaLibrosPrestamo {
 
     Boolean getEstado();
 
+    String getObservacionEntrega();
+
 }
