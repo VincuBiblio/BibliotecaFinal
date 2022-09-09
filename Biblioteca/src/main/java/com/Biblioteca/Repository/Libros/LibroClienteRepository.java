@@ -14,7 +14,7 @@ public interface LibroClienteRepository extends JpaRepository<PrestamoLibroClien
             "pr.dia_dev as diadev,pr.observaciones_entrega as observacionEntrega, pr.mes_dev as mesdev,pr.anio_dev as aniodev,\n" +
             "l.codigo_libro as codigoLibro, l.estado as estado\n" +
             "from prestamo_libros l , prestamolibros_cliente pr , persona p , cliente c\n" +
-            "where l.estado=true and l.id=pr.id_prestamo and c.persona_id=p.id and c.id=pr.id_cliente", nativeQuery = true)
+            "where l.id=pr.id_prestamo and c.persona_id=p.id and c.id=pr.id_cliente and pr.observaciones_dev is null", nativeQuery = true)
     List<ListaLibrosPrestamo> findAllByEstado(Boolean estado);
 
 }
