@@ -77,11 +77,6 @@ public class LibrosClientesService {
     public boolean updatePrestamo(LibrosClientesRequest request){
         Optional<PrestamoLibroCliente> optional = libroClienteRepository.findById(request.getIdPrestao());
         if (optional.isPresent()){
-            Optional<Cliente> cliente = clienteRepository.findById(request.getIdCliente());
-            if (cliente.isPresent()) {
-                Optional<PrestamoLibros> libro = prestamoLibrosRepository.findById(request.getIdLibro());
-                if (libro.isPresent()) {
-                    if (libro.get().getEstado()==false) {
 
                         optional.get().setDiaPrestamo((long) request.getFechaEntrega().getDate());
                         optional.get().setMesPrestamo((long) request.getFechaEntrega().getMonth() + 1);
@@ -91,30 +86,19 @@ public class LibrosClientesService {
                         optional.get().setAnioDev((long) request.getFechaDev().getYear() + 1900);
                         optional.get().setObservacionesEntrega(request.getObservacionesEntrega());
                         optional.get().setObservacionesDev(request.getObservacionesDev());
-                        optional.get().setCliente(cliente.get());
-                        optional.get().setPrestamo(libro.get());
-
                         try {
                             PrestamoLibroCliente p=libroClienteRepository.save(optional.get());
                             return true;
                         } catch (Exception ex) {
                             throw new BadRequestException("No se actualizo el cliente/libro" + ex);
                         }
-                    } else {
-                        new Mensaje("El libro está en préstamo");
 
-                    }
-                } else {
-                    throw new BadRequestException("No existe un libro con id" + request.getIdLibro());
-                }
 
-            } else {
-                throw new BadRequestException("No existe cliente con id" + request.getIdCliente());
-            }
+
+
         }else {
             throw new BadRequestException("No existe prestamo con id" + request.getIdPrestao());
         }
-        return false;
 
     }
 
