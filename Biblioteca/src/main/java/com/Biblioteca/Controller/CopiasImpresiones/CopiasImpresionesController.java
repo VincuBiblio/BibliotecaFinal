@@ -3,8 +3,10 @@ package com.Biblioteca.Controller.CopiasImpresiones;
 
 import com.Biblioteca.DTO.CursoTaller.CursoRequest;
 import com.Biblioteca.DTO.CursoTaller.CursoResponse;
+import com.Biblioteca.DTO.CursoTaller.reportes.CursoporgeneroResponse;
 import com.Biblioteca.DTO.Servicios.CopiasImpresiones.Clientes.CopiasClienteRequest;
 import com.Biblioteca.DTO.Servicios.CopiasImpresiones.Clientes.CopiasClienteResponse;
+import com.Biblioteca.DTO.Servicios.CopiasImpresiones.reporte.CopiasClientesporGenero;
 import com.Biblioteca.DTO.Servicios.PrestamoLibros.Clientes.LibrosClientesRequest;
 import com.Biblioteca.Exceptions.Mensaje;
 import com.Biblioteca.Service.Copias.CopiasService;
@@ -57,4 +59,12 @@ public class CopiasImpresionesController {
         copiasService.deleteById(id);
         return  new ResponseEntity<>(new Mensaje("Registro eliminado"),HttpStatus.OK);
     }
+
+    @GetMapping("/reportecursoporgenero/{mes}/{anio}")
+    public ResponseEntity<CopiasClientesporGenero> reportegenerocopias(@PathVariable Long mes, Long anio) {
+        CopiasClientesporGenero cg= new CopiasClientesporGenero();
+        cg=copiasService.reporteporgenero(mes,anio);
+        return new ResponseEntity<>(cg, HttpStatus.OK);
+    }
+
 }

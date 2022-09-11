@@ -25,7 +25,6 @@ public class Evento implements Serializable {
 
     private String descripcion;
     private String observaciones;
-
     private String actividades;
 
     private Long numParticipantes;
@@ -33,6 +32,7 @@ public class Evento implements Serializable {
     @Column(name = "fecha")
     @Temporal(TemporalType.DATE)
     private Date fecha;
+    private Long mes, anio;
 
     @Column(length = 10485760)
     private String documento;

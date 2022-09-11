@@ -3,9 +3,11 @@ package com.Biblioteca.Service.Copias;
 
 import com.Biblioteca.DTO.CursoTaller.CursoRequest;
 import com.Biblioteca.DTO.CursoTaller.CursoResponse;
+import com.Biblioteca.DTO.CursoTaller.reportes.CursoporgeneroResponse;
 import com.Biblioteca.DTO.Servicios.CopiasImpresiones.Clientes.CopiasClienteRequest;
 import com.Biblioteca.DTO.Servicios.CopiasImpresiones.Clientes.CopiasClienteResponse;
 import com.Biblioteca.DTO.Servicios.CopiasImpresiones.CopiasImpresionesRequest;
+import com.Biblioteca.DTO.Servicios.CopiasImpresiones.reporte.CopiasClientesporGenero;
 import com.Biblioteca.Exceptions.BadRequestException;
 import com.Biblioteca.Exceptions.ResponseNotFoundException;
 import com.Biblioteca.Models.CursoTaller.Curso.Curso;
@@ -21,6 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.math.BigInteger;
 import java.text.ParseException;
@@ -219,6 +224,78 @@ public class CopiasService {
         } else {
             throw new BadRequestException("El registro de copias cliente con el id " + id + ", no existe");
         }
+    }
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+
+    public BigInteger contar(Long mes, Long anio) {
+        Query nativeQuery = entityManager.createNativeQuery("SELECT DISTINCT count(*) FROM copias_cliente cc " +
+                " where cc.mes= ? and cc.anio=?");
+        nativeQuery.setParameter(1, mes);
+        nativeQuery.setParameter(2, anio);
+        return (BigInteger) nativeQuery.getSingleResult();
+    }
+
+    public BigInteger contarporgeneroM(Long mes, Long anio) {
+        String generoM="MASCULINO";
+        Query nativeQuery = entityManager.createNativeQuery("SELECT DISTINCT count(*) FROM copias_cliente cc " +
+                "join cliente cl on cl.id=cc.id_cliente where cc.mes= ? and cc.anio=? and cl.genero= ?");
+        nativeQuery.setParameter(1, mes);
+        nativeQuery.setParameter(2, anio);
+        nativeQuery.setParameter(3, generoM);
+        return (BigInteger) nativeQuery.getSingleResult();
+    }
+    public BigInteger contarporgeneroF(Long mes, Long anio) {
+        String generoF="FEMENINO";
+        Query nativeQuery = entityManager.createNativeQuery("SELECT DISTINCT count(*) FROM copias_cliente cc " +
+                "join cliente cl on cl.id=cc.id_cliente where cc.mes= ? and cc.anio=? and cl.genero= ?");
+        nativeQuery.setParameter(1, mes);
+        nativeQuery.setParameter(2, anio);
+        nativeQuery.setParameter(3, generoF);
+        return (BigInteger) nativeQuery.getSingleResult();
+    }
+    public BigInteger contarporgeneroOtro(Long mes, Long anio) {
+        String generoOtro="OTROS";
+        Query nativeQuery = entityManager.createNativeQuery("SELECT DISTINCT count(*) FROM copias_cliente cc " +
+                "join cliente cl on cl.id=cc.id_cliente where cc.mes= ? and cc.anio=? and cl.genero= ?");
+        nativeQuery.setParameter(1, mes);
+        nativeQuery.setParameter(2, anio);
+        nativeQuery.setParameter(3, generoOtro);
+        return (BigInteger) nativeQuery.getSingleResult();
+    }
+
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public CopiasClientesporGenero reporteporgenero(Long mes, Long anio) {
+
+            CopiasClientesporGenero cr = new CopiasClientesporGenero();
+            BigInteger numeroM,numeroF, numeroOtro, total;
+            Double porcentajeM,porcentajeF,porcentajeOtro;
+            numeroM =contarporgeneroM(mes, anio);
+            numeroF=contarporgeneroF(mes, anio);
+            numeroOtro=contarporgeneroOtro(mes, anio);
+            total=contar(mes, anio);
+            porcentajeM=(numeroM.doubleValue()*100)/total.doubleValue();
+            porcentajeF=(numeroF.doubleValue()*100)/total.doubleValue();
+            porcentajeOtro=(numeroOtro.doubleValue()*100)/total.doubleValue();
+            try {
+                cr.setN_Masculino(numeroM.longValue());
+                cr.setN_Femenino(numeroF.longValue());
+                cr.setN_Otro(numeroOtro.longValue());
+                cr.setTotal(total.longValue());
+                cr.setPorcent_Masculino(porcentajeM);
+                cr.setPorcent_Femenino(porcentajeF);
+                cr.setPorcent_Otro(porcentajeOtro);
+                if(total.longValue()>0) {
+                    return cr;
+                } else {
+                    throw new BadRequestException("NO EXISTEN AUN registro de copias el la fecha: " + mes+"/"+ anio);
+                }
+            } catch (Exception e) {
+                throw new BadRequestException("El registro de copias en la fecha: " + mes+"/"+ anio+" aun no existe");
+            }
+
     }
 
 
