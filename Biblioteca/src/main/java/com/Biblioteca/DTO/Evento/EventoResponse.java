@@ -11,6 +11,7 @@ public class EventoResponse implements Serializable {
     private String descripcion;
     private String observaciones;
     private Date fecha;
+    private Long mes, anio;
     private String actividades;
     private Long numParticipantes;
     private String documento;

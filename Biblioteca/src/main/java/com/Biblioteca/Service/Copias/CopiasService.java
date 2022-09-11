@@ -295,7 +295,6 @@ public class CopiasService {
             } catch (Exception e) {
                 throw new BadRequestException("El registro de copias en la fecha: " + mes+"/"+ anio+" aun no existe");
             }
-
     }
 
 

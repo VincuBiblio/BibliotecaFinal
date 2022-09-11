@@ -3,9 +3,13 @@ package com.Biblioteca.Service;
 
 import com.Biblioteca.DTO.Evento.EventoRequest;
 import com.Biblioteca.DTO.Evento.EventoResponse;
+import com.Biblioteca.DTO.Evento.reporte.EventopormesResponse;
+import com.Biblioteca.DTO.Servicios.CopiasImpresiones.Clientes.CopiasClienteResponse;
+import com.Biblioteca.DTO.Servicios.CopiasImpresiones.reporte.CopiasClientesporGenero;
 import com.Biblioteca.Exceptions.BadRequestException;
 import com.Biblioteca.Models.Evento.Evento;
 import com.Biblioteca.Models.Persona.Usuario;
+import com.Biblioteca.Models.Servicio.CopiasImpresiones.CopiasCliente;
 import com.Biblioteca.Repository.Evento.EventoRepository;
 import com.Biblioteca.Repository.Persona.PersonaRepository;
 import com.Biblioteca.Repository.Persona.UsuarioRepository;
@@ -14,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,6 +50,8 @@ public class EventoService {
         Evento evento = new Evento();
         evento.setDescripcion(eventoRequest.getDescripcion());
         evento.setFecha(eventoRequest.getFecha());
+        evento.setMes((long)eventoRequest.getFecha().getMonth()+1);
+        evento.setAnio((long)eventoRequest.getFecha().getYear()+1900);
         evento.setActividades(eventoRequest.getActividades());
         evento.setObservaciones(eventoRequest.getObservaciones());
         evento.setUsuario(user);
@@ -63,6 +70,8 @@ public class EventoService {
         if(evento.isPresent()){
             evento.get().setDescripcion(eventoRequest.getDescripcion());
             evento.get().setFecha(eventoRequest.getFecha());
+            evento.get().setMes((long)eventoRequest.getFecha().getMonth()+1);
+            evento.get().setAnio((long)eventoRequest.getFecha().getYear()+1900);
             evento.get().setActividades(eventoRequest.getActividades());
             evento.get().setObservaciones(eventoRequest.getObservaciones());
             evento.get().setNumParticipantes(eventoRequest.getNumParticipantes());
@@ -110,6 +119,8 @@ public class EventoService {
             er.setObservaciones(cRequest.getObservaciones());
             er.setNumParticipantes(cRequest.getNumParticipantes());
             er.setFecha(cRequest.getFecha());
+            er.setMes((long)cRequest.getFecha().getMonth()+1);
+            er.setAnio((long)cRequest.getFecha().getYear()+1900);
             er.setDocumento(cRequest.getDocumento());
             return er;
         }).collect(Collectors.toList());
@@ -128,6 +139,8 @@ public class EventoService {
             er.setObservaciones(cRequest.getObservaciones());
             er.setNumParticipantes(cRequest.getNumParticipantes());
             er.setFecha(cRequest.getFecha());
+            er.setMes((long)cRequest.getFecha().getMonth()+1);
+            er.setAnio((long)cRequest.getFecha().getYear()+1900);
             er.setDocumento(cRequest.getDocumento());
             return er;
         }).collect(Collectors.toList());
@@ -147,6 +160,8 @@ public class EventoService {
             er.setObservaciones(cRequest.getObservaciones());
             er.setNumParticipantes(cRequest.getNumParticipantes());
             er.setFecha(cRequest.getFecha());
+            er.setMes((long)cRequest.getFecha().getMonth()+1);
+            er.setAnio((long)cRequest.getFecha().getYear()+1900);
             er.setDocumento(cRequest.getDocumento());
             return er;
         }).collect(Collectors.toList());
@@ -160,4 +175,21 @@ public class EventoService {
             throw new BadRequestException("El evento con el id " + id + ", no existe");
         }
     }
+
+
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public List<EventopormesResponse> reporteeventopormesyanio(Long mes, Long anio) {
+            List<Evento> ev = eventoRepository.findByMesAndAnio(mes,anio);
+            if(!ev.isEmpty()){
+                return ev.stream().map(cRequest -> {
+                    EventopormesResponse cr = new  EventopormesResponse();
+                    cr.setId(cRequest.getId());
+                    cr.setDescripcion(cRequest.getDescripcion());
+                    cr.setFecha(cRequest.getFecha());
+                    cr.setNumParticipantes(cRequest.getNumParticipantes());
+                       return cr;
+                }).collect(Collectors.toList());
+            }
+            throw new BadRequestException("NO EXISTEN EVENTOS EN ESA FECHA ESPECIFICADA");
+        }
 }

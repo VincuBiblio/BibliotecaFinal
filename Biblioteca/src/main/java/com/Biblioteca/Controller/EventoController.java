@@ -2,7 +2,9 @@ package com.Biblioteca.Controller;
 
 import com.Biblioteca.DTO.Evento.EventoRequest;
 import com.Biblioteca.DTO.Evento.EventoResponse;
-import com.Biblioteca.Exceptions.Mensaje; 
+import com.Biblioteca.DTO.Evento.reporte.EventopormesResponse;
+import com.Biblioteca.DTO.Servicios.CopiasImpresiones.Clientes.CopiasClienteResponse;
+import com.Biblioteca.Exceptions.Mensaje;
 import com.Biblioteca.Service.EventoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -58,4 +60,9 @@ public class EventoController {
         return  new ResponseEntity<>(new Mensaje("Evento eliminado"),HttpStatus.OK);
     }
 
+    @GetMapping("/eventospormes/{mes}/{anio}")
+    public ResponseEntity<List<EventopormesResponse>> eventospormer(@PathVariable Long mes, Long anio){
+        List<EventopormesResponse> co = eventoService.reporteeventopormesyanio(mes, anio);
+        return new ResponseEntity<List<EventopormesResponse>>(co, HttpStatus.OK);
+    }
 }
