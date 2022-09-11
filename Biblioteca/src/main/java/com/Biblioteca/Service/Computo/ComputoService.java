@@ -25,7 +25,7 @@ public class ComputoService {
 
     public boolean registrarInventario(InventarioRequest request){
         Optional<InventarioComputo> optional = inventarioComputoRepository.findByNumero(request.getNumero());
-        if(optional.isPresent()) {
+        if(!optional.isPresent()) {
             InventarioComputo inventarioComputo = new InventarioComputo();
             inventarioComputo.setDiscoDuro(request.getDiscoDuro());
             inventarioComputo.setEstado(request.getEstado());
