@@ -4,6 +4,8 @@ import com.Biblioteca.DTO.Computo.ComputoClienteHoraFinRequest;
 import com.Biblioteca.DTO.Computo.ComputoClienteHoraFinResponse;
 import com.Biblioteca.DTO.Computo.ComputoClienteRequest;
 import com.Biblioteca.DTO.Computo.ComputoClienteResponse;
+import com.Biblioteca.DTO.Estadisticas.Datos;
+import com.Biblioteca.DTO.Estadisticas.EstadisticasGenero;
 import com.Biblioteca.Exceptions.BadRequestException;
 import com.Biblioteca.Models.Persona.Cliente;
 import com.Biblioteca.Models.Persona.Persona;
@@ -46,17 +48,24 @@ public class ComputoClienteService {
         if(cliente.isPresent()){
             Optional<InventarioComputo> inventarioComputo = inventarioComputoRepository.findById(request.getIdInventario());
             if(inventarioComputo.isPresent()){
-                ComputoCliente newComputoCliente = new ComputoCliente();
-                newComputoCliente.setDescripcion(request.getDescripcion());
-                newComputoCliente.setHoraInicio(request.getHoraInicio());
-                newComputoCliente.setHoraFin(request.getHoraFin());
-                newComputoCliente.setCliente(cliente.get());
-                newComputoCliente.setInventario(inventarioComputo.get());
-                try{
-                    computoClienteRepository.save(newComputoCliente);
-                    return true;
-                }catch (Exception ex) {
-                    throw new BadRequestException("No se guardó el cliente/computo" + ex);
+                if(inventarioComputo.get().getEstado()==false) {
+                    ComputoCliente newComputoCliente = new ComputoCliente();
+                    newComputoCliente.setDescripcion(request.getDescripcion());
+                    newComputoCliente.setHoraInicio(request.getHoraInicio());
+                    newComputoCliente.setHoraFin(request.getHoraFin());
+                    newComputoCliente.setCliente(cliente.get());
+                    newComputoCliente.setInventario(inventarioComputo.get());
+                    newComputoCliente.setDia((long) request.getFecha().getDate());
+                    newComputoCliente.setMes((long) request.getFecha().getMonth()+1);
+                    newComputoCliente.setAnio((long) request.getFecha().getYear()+1900);
+                    try {
+                        computoClienteRepository.save(newComputoCliente);
+                        return true;
+                    } catch (Exception ex) {
+                        throw new BadRequestException("No se guardó el cliente/computo" + ex);
+                    }
+                }else {
+                    throw new BadRequestException("EL computador esta en prestamo" + request.getIdInventario());
                 }
             }else {
                 throw new BadRequestException("No existe computador con id" + request.getIdInventario());
@@ -165,5 +174,46 @@ public class ComputoClienteService {
         }else{
             throw new BadRequestException("No existe registro con id " + id);
         }
+    }
+
+
+    public Double calcularPorcentaje(Long total, Long cantidad){
+        Double pct= (double)(cantidad*100)/total;
+        return Math.round(pct*100)/100.0;
+
+    }
+
+    @Transactional
+    public EstadisticasGenero estadisticasGeneroComputo(Long mes, Long anio){
+        Long numMasculino = computoClienteRepository.countDistinctByGeneroAndMesPrestamoAndAnioPrestamo("masculino",mes,anio);
+
+        Long numFemenino = computoClienteRepository.countDistinctByGeneroAndMesPrestamoAndAnioPrestamo("femenino",mes,anio);
+
+        Long numOtros = computoClienteRepository.countDistinctByGeneroAndMesPrestamoAndAnioPrestamo("otros",mes,anio);
+
+        Long total = numMasculino+numFemenino+numOtros;
+
+        Datos datosMas= new Datos();
+        datosMas.setNum(numMasculino);
+        datosMas.setPct(calcularPorcentaje(total,numMasculino));
+
+        Datos datosFemenino= new Datos();
+        datosFemenino.setNum(numFemenino);
+        datosFemenino.setPct(calcularPorcentaje(total,numFemenino));
+
+        Datos datosOtros= new Datos();
+        datosOtros.setNum(numOtros);
+        datosOtros.setPct(calcularPorcentaje(total,numOtros));
+
+
+        EstadisticasGenero e = new EstadisticasGenero();
+        e.setMasculino(datosMas);
+        e.setFemenino(datosFemenino);
+        e.setOtros(datosOtros);
+        e.setMes(mes);
+        e.setAnio(anio);
+        e.setTotal(total);
+        return e;
+
     }
 }

@@ -17,4 +17,15 @@ public interface LibroClienteRepository extends JpaRepository<PrestamoLibroClien
             "where l.id=pr.id_prestamo and c.persona_id=p.id and c.id=pr.id_cliente and pr.observaciones_dev is null", nativeQuery = true)
     List<ListaLibrosPrestamo> findAllByEstado(Boolean estado);
 
+
+
+    @Query(value = "select distinct count(*)\n" +
+            "from persona p, cliente c, prestamo_libros l, prestamolibros_cliente pl\n" +
+            "where c.genero = :genero and pl.mes_prestamo = :mes and pl.anio_prestamo = :anio \n" +
+            "and c.persona_id = p.id and pl.id_cliente = c.id and pl.id_prestamo = l.id ", nativeQuery = true)
+    Long countDistinctByGeneroAndMesPrestamoAndAnioPrestamo(String genero,Long mes, Long anio);
+
+
+
+
 }

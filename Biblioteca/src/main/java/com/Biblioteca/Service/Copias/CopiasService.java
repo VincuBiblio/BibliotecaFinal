@@ -4,6 +4,8 @@ package com.Biblioteca.Service.Copias;
 import com.Biblioteca.DTO.CursoTaller.CursoRequest;
 import com.Biblioteca.DTO.CursoTaller.CursoResponse;
 import com.Biblioteca.DTO.CursoTaller.reportes.CursoporgeneroResponse;
+import com.Biblioteca.DTO.Estadisticas.Datos;
+import com.Biblioteca.DTO.Estadisticas.EstadisticasGenero;
 import com.Biblioteca.DTO.Servicios.CopiasImpresiones.Clientes.CopiasClienteRequest;
 import com.Biblioteca.DTO.Servicios.CopiasImpresiones.Clientes.CopiasClienteResponse;
 import com.Biblioteca.DTO.Servicios.CopiasImpresiones.CopiasImpresionesRequest;
@@ -296,6 +298,44 @@ public class CopiasService {
                 throw new BadRequestException("El registro de copias en la fecha: " + mes+"/"+ anio+" aun no existe");
             }
     }
+    public Double calcularPorcentaje(Long total, Long cantidad){
+        Double pct= (double)(cantidad*100)/total;
+        return Math.round(pct*100)/100.0;
 
+    }
+
+    @Transactional
+    public EstadisticasGenero estadisticasGeneroCopias(Long mes, Long anio){
+        Long numMasculino = copiasImpresionesRepository.countDistinctByGeneroAndMesAndAnio("masculino",mes,anio);
+
+        Long numFemenino = copiasImpresionesRepository.countDistinctByGeneroAndMesAndAnio("femenino",mes,anio);
+
+        Long numOtros = copiasImpresionesRepository.countDistinctByGeneroAndMesAndAnio("otros",mes,anio);
+
+        Long total = numMasculino+numFemenino+numOtros;
+
+        Datos datosMas= new Datos();
+        datosMas.setNum(numMasculino);
+        datosMas.setPct(calcularPorcentaje(total,numMasculino));
+
+        Datos datosFemenino= new Datos();
+        datosFemenino.setNum(numFemenino);
+        datosFemenino.setPct(calcularPorcentaje(total,numFemenino));
+
+        Datos datosOtros= new Datos();
+        datosOtros.setNum(numOtros);
+        datosOtros.setPct(calcularPorcentaje(total,numOtros));
+
+
+        EstadisticasGenero e = new EstadisticasGenero();
+        e.setMasculino(datosMas);
+        e.setFemenino(datosFemenino);
+        e.setOtros(datosOtros);
+        e.setMes(mes);
+        e.setAnio(anio);
+        e.setTotal(total);
+        return e;
+
+    }
 
 }

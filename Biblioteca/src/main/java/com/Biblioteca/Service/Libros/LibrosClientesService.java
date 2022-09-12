@@ -1,9 +1,10 @@
 package com.Biblioteca.Service.Libros;
 
 
+import com.Biblioteca.DTO.Estadisticas.Datos;
+import com.Biblioteca.DTO.Estadisticas.EstadisticasGenero;
 import com.Biblioteca.DTO.Servicios.PrestamoLibros.Clientes.LibrosClientesRequest;
 import com.Biblioteca.Exceptions.BadRequestException;
-import com.Biblioteca.Exceptions.Mensaje;
 import com.Biblioteca.Models.Persona.Cliente;
 import com.Biblioteca.Models.Servicio.PrestamoLibros.PrestamoLibroCliente;
 import com.Biblioteca.Models.Servicio.PrestamoLibros.PrestamoLibros;
@@ -105,6 +106,47 @@ public class LibrosClientesService {
     @Transactional
     public List<ListaLibrosPrestamo> listaLbrosEnPrestamo(){
         return libroClienteRepository.findAllByEstado(false);
+    }
+
+
+    public Double calcularPorcentaje(Long total, Long cantidad){
+        Double pct= (double)(cantidad*100)/total;
+        return Math.round(pct*100)/100.0;
+
+    }
+
+    @Transactional
+    public EstadisticasGenero estadisticasGeneroLibros(Long mes, Long anio){
+        Long numMasculino = libroClienteRepository.countDistinctByGeneroAndMesPrestamoAndAnioPrestamo("masculino",mes,anio);
+
+        Long numFemenino = libroClienteRepository.countDistinctByGeneroAndMesPrestamoAndAnioPrestamo("femenino",mes,anio);
+
+        Long numOtros = libroClienteRepository.countDistinctByGeneroAndMesPrestamoAndAnioPrestamo("otros",mes,anio);
+
+        Long total = numMasculino+numFemenino+numOtros;
+
+        Datos datosMas= new Datos();
+        datosMas.setNum(numMasculino);
+        datosMas.setPct(calcularPorcentaje(total,numMasculino));
+
+        Datos datosFemenino= new Datos();
+        datosFemenino.setNum(numFemenino);
+        datosFemenino.setPct(calcularPorcentaje(total,numFemenino));
+
+        Datos datosOtros= new Datos();
+        datosOtros.setNum(numOtros);
+        datosOtros.setPct(calcularPorcentaje(total,numOtros));
+
+
+        EstadisticasGenero e = new EstadisticasGenero();
+        e.setMasculino(datosMas);
+        e.setFemenino(datosFemenino);
+        e.setOtros(datosOtros);
+        e.setMes(mes);
+        e.setAnio(anio);
+        e.setTotal(total);
+        return e;
+
     }
 
 

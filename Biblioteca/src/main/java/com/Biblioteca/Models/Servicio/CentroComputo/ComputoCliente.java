@@ -27,6 +27,12 @@ public class ComputoCliente implements Serializable {
 
         private String horaFin;
 
+        private Long dia;
+
+        private Long mes;
+
+        private Long anio;
+
         @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
         @JoinColumn(name = "id_cliente",referencedColumnName = "id")
         private Cliente cliente;
