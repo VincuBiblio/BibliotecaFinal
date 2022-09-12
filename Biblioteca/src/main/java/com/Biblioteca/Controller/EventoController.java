@@ -61,7 +61,7 @@ public class EventoController {
     }
 
     @GetMapping("/eventospormes/{mes}/{anio}")
-    public ResponseEntity<List<EventopormesResponse>> eventospormer(@PathVariable Long mes, Long anio){
+    public ResponseEntity<List<EventopormesResponse>> eventospormer(@PathVariable Long mes, @PathVariable Long anio){
         List<EventopormesResponse> co = eventoService.reporteeventopormesyanio(mes, anio);
         return new ResponseEntity<List<EventopormesResponse>>(co, HttpStatus.OK);
     }

@@ -61,7 +61,7 @@ public class CopiasImpresionesController {
     }
 
     @GetMapping("/reportecursoporgenero/{mes}/{anio}")
-    public ResponseEntity<CopiasClientesporGenero> reportegenerocopias(@PathVariable Long mes, Long anio) {
+    public ResponseEntity<CopiasClientesporGenero> reportegenerocopias(@PathVariable Long mes,@PathVariable Long anio) {
         CopiasClientesporGenero cg= new CopiasClientesporGenero();
         cg=copiasService.reporteporgenero(mes,anio);
         return new ResponseEntity<>(cg, HttpStatus.OK);
