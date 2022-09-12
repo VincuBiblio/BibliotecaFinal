@@ -306,11 +306,11 @@ public class CopiasService {
 
     @Transactional
     public EstadisticasGenero estadisticasGeneroCopias(Long mes, Long anio){
-        Long numMasculino = copiasImpresionesRepository.countDistinctByGeneroAndMesAndAnio("masculino",mes,anio);
+        Long numMasculino = copiasImpresionesRepository.countDistinctByGeneroAndMesAndAnio("MASCULINO",mes,anio);
 
-        Long numFemenino = copiasImpresionesRepository.countDistinctByGeneroAndMesAndAnio("femenino",mes,anio);
+        Long numFemenino = copiasImpresionesRepository.countDistinctByGeneroAndMesAndAnio("FEMENINO",mes,anio);
 
-        Long numOtros = copiasImpresionesRepository.countDistinctByGeneroAndMesAndAnio("otros",mes,anio);
+        Long numOtros = copiasImpresionesRepository.countDistinctByGeneroAndMesAndAnio("OTROS",mes,anio);
 
         Long total = numMasculino+numFemenino+numOtros;
 

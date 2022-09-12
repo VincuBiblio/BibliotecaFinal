@@ -185,11 +185,11 @@ public class ComputoClienteService {
 
     @Transactional
     public EstadisticasGenero estadisticasGeneroComputo(Long mes, Long anio){
-        Long numMasculino = computoClienteRepository.countDistinctByGeneroAndMesPrestamoAndAnioPrestamo("masculino",mes,anio);
+        Long numMasculino = computoClienteRepository.countDistinctByGeneroAndMesPrestamoAndAnioPrestamo("MASCULINO",mes,anio);
 
-        Long numFemenino = computoClienteRepository.countDistinctByGeneroAndMesPrestamoAndAnioPrestamo("femenino",mes,anio);
+        Long numFemenino = computoClienteRepository.countDistinctByGeneroAndMesPrestamoAndAnioPrestamo("FEMENINO",mes,anio);
 
-        Long numOtros = computoClienteRepository.countDistinctByGeneroAndMesPrestamoAndAnioPrestamo("otros",mes,anio);
+        Long numOtros = computoClienteRepository.countDistinctByGeneroAndMesPrestamoAndAnioPrestamo("OTROS",mes,anio);
 
         Long total = numMasculino+numFemenino+numOtros;
 

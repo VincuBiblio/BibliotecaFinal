@@ -117,11 +117,11 @@ public class LibrosClientesService {
 
     @Transactional
     public EstadisticasGenero estadisticasGeneroLibros(Long mes, Long anio){
-        Long numMasculino = libroClienteRepository.countDistinctByGeneroAndMesPrestamoAndAnioPrestamo("masculino",mes,anio);
+        Long numMasculino = libroClienteRepository.countDistinctByGeneroAndMesPrestamoAndAnioPrestamo("MASCULINO",mes,anio);
 
-        Long numFemenino = libroClienteRepository.countDistinctByGeneroAndMesPrestamoAndAnioPrestamo("femenino",mes,anio);
+        Long numFemenino = libroClienteRepository.countDistinctByGeneroAndMesPrestamoAndAnioPrestamo("FEMENINO",mes,anio);
 
-        Long numOtros = libroClienteRepository.countDistinctByGeneroAndMesPrestamoAndAnioPrestamo("otros",mes,anio);
+        Long numOtros = libroClienteRepository.countDistinctByGeneroAndMesPrestamoAndAnioPrestamo("OTROS",mes,anio);
 
         Long total = numMasculino+numFemenino+numOtros;
 
