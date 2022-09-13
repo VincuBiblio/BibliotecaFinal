@@ -39,6 +39,11 @@ public class InventarioComputoController {
         return new ResponseEntity<>(service.actualizarInventario(request), HttpStatus.OK);
     }
 
+    @PutMapping("/actualizarcomputador/estado/prestamo")
+    public ResponseEntity<?> actualizarComputadorEstadoPrestamo(@RequestBody InventarioRequest request){
+        return new ResponseEntity<>(service.actualizarInventarioEstadoPrestamo(request), HttpStatus.OK);
+    }
+
 
     @GetMapping("/all")
     public ResponseEntity<List<InventarioResponse>> all(){
@@ -74,6 +79,12 @@ public class InventarioComputoController {
     @GetMapping("/allClienteComputo")
     public ResponseEntity<List<ComputoClienteResponse>> listAllComputoCliente(){
         List<ComputoClienteResponse> cc = computoClienteService.listAllPrestamos();
+        return new ResponseEntity<List<ComputoClienteResponse>>(cc, HttpStatus.OK);
+    }
+
+    @GetMapping("/allClienteComputo/horaNull")
+    public ResponseEntity<List<ComputoClienteResponse>> listAllComputoClienteHoraFinNull(){
+        List<ComputoClienteResponse> cc = computoClienteService.listAllPrestamosHoraFin();
         return new ResponseEntity<List<ComputoClienteResponse>>(cc, HttpStatus.OK);
     }
 

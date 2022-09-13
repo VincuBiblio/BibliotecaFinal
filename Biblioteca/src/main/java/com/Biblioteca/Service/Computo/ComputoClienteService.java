@@ -118,6 +118,7 @@ public class ComputoClienteService {
                             response.setDiscoDuro(i.getDiscoDuro());
                             response.setProcesador(i.getProcesador());
                             response.setEstado(i.getEstado());
+                            response.setEstadoPrestamo(i.getEstadoPrestamo());
                             return response;
                         }else{
                             throw new BadRequestException("No existe computador con id " + computoCliente.getInventario().getId());
@@ -165,7 +166,61 @@ public class ComputoClienteService {
             throw new BadRequestException("No existe registro con id" + request.getId());
         }
     }
-
+    @Transactional
+    public List<ComputoClienteResponse> listAllPrestamosHoraFin(){
+        List<ComputoCliente> listaCC= computoClienteRepository.findAllByHoraFin(null+"");
+        return listaCC.stream().map(computoCliente -> {
+            ComputoClienteResponse response = new ComputoClienteResponse();
+            Optional<Cliente> cliente = clienteRepository.findById(computoCliente.getCliente().getId());
+            if (cliente.isPresent()) {
+                Optional<Persona> persona = personaRepository.findById(cliente.get().getId());
+                if(persona.isPresent()){
+                    Optional<InventarioComputo> inventarioComputo = inventarioComputoRepository.findById(computoCliente.getInventario().getId());
+                    if(inventarioComputo.isPresent()){
+                        Persona p= persona.get();
+                        Cliente c = cliente.get();
+                        InventarioComputo i = inventarioComputo.get();
+                        response.setIdPrestamo(computoCliente.getId());
+                        response.setIdPersona(p.getId());
+                        response.setIdCliente(c.getId());
+                        response.setDescripcion(computoCliente.getDescripcion());
+                        response.setHoraInicio(computoCliente.getHoraInicio());
+                        response.setHoraFin(computoCliente.getHoraFin());
+                        response.setCedula(p.getCedula());
+                        response.setApellidos(p.getApellidos());
+                        response.setNombres(p.getNombres());
+                        response.setFechaNacimiento(c.getFechaNacimiento());
+                        response.setEdad(c.getEdad());
+                        response.setGenero(c.getGenero());
+                        response.setTelefono(p.getTelefono());
+                        response.setEmail(p.getEmail());
+                        response.setEstadoCivil(c.getEstadoCivil());
+                        response.setDiscapacidad(c.getDiscapacidad());
+                        response.setNombreResponsable(c.getNombreResponsable());
+                        response.setTelefonoResponsbale(c.getTelefonoResponsbale());
+                        response.setBarrio(c.getUbicacion().getBarrio().getBarrio());
+                        response.setParroquia(c.getUbicacion().getParroquia().getParroquia());
+                        response.setCanton(c.getUbicacion().getCanton().getCanton());
+                        response.setProvincia(c.getUbicacion().getProvincia().getProvincia());
+                        response.setIdComputador(computoCliente.getInventario().getId());
+                        response.setNumero(i.getNumero());
+                        response.setRam(i.getRam());
+                        response.setDiscoDuro(i.getDiscoDuro());
+                        response.setProcesador(i.getProcesador());
+                        response.setEstado(i.getEstado());
+                        response.setEstadoPrestamo(i.getEstadoPrestamo());
+                        return response;
+                    }else{
+                        throw new BadRequestException("No existe computador con id " + computoCliente.getInventario().getId());
+                    }
+                }else{
+                    throw new BadRequestException("No existe persona con id asociada al cliente" + cliente.get().getId());
+                }
+            }else{
+                throw new BadRequestException("No existe cliente con id" + computoCliente.getCliente().getId());
+            }
+        }).collect(Collectors.toList());
+    }
 
     public void deleteById(Long id){
         Optional<ComputoCliente> cc = computoClienteRepository.findById(id);

@@ -1,8 +1,11 @@
 package com.Biblioteca.Repository.Computo;
 
+import com.Biblioteca.DTO.Computo.ComputoClienteResponse;
 import com.Biblioteca.Models.Servicio.CentroComputo.ComputoCliente;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
 
 public interface ComputoClienteRepository extends JpaRepository<ComputoCliente, Long> {
 
@@ -12,5 +15,5 @@ public interface ComputoClienteRepository extends JpaRepository<ComputoCliente, 
             "and c.persona_id = p.id and pl.id_cliente = c.id and pl.id_inventario  = l.id ", nativeQuery = true)
     Long countDistinctByGeneroAndMesPrestamoAndAnioPrestamo(String genero,Long mes, Long anio);
 
-
+    List<ComputoCliente> findAllByHoraFin(String horaFin);
 }

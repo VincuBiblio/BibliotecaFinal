@@ -32,6 +32,7 @@ public class ComputoService {
             inventarioComputo.setNumero(request.getNumero());
             inventarioComputo.setProcesador(request.getProcesador());
             inventarioComputo.setRam(request.getRam());
+            inventarioComputo.setEstadoPrestamo(request.getEstadoPrestamo());
             try{
                 inventarioComputoRepository.save(inventarioComputo);
                 return true;
@@ -50,12 +51,28 @@ public class ComputoService {
             optional.get().setEstado(request.getEstado());
             optional.get().setProcesador(request.getProcesador());
             optional.get().setRam(request.getRam());
+            optional.get().setEstadoPrestamo(request.getEstadoPrestamo());
            try{
                inventarioComputoRepository.save(optional.get());
                return true;
            }catch (Exception ex) {
                throw new BadRequestException("No se actualizó el computador" + ex);
            }
+        }else{
+            throw new BadRequestException("No existe un computador con número " +request.getId() );
+        }
+    }
+
+    public boolean actualizarInventarioEstadoPrestamo(InventarioRequest request){
+        Optional<InventarioComputo> optional = inventarioComputoRepository.findById(request.getId());
+        if(optional.isPresent()) {
+            optional.get().setEstadoPrestamo(request.getEstadoPrestamo());
+            try{
+                inventarioComputoRepository.save(optional.get());
+                return true;
+            }catch (Exception ex) {
+                throw new BadRequestException("No se actualizó el estado de prestamo del computador" + ex);
+            }
         }else{
             throw new BadRequestException("No existe un computador con número " +request.getId() );
         }
@@ -72,6 +89,7 @@ public class ComputoService {
             response.setNumero(request.getNumero());
             response.setRam(request.getRam());
             response.setDiscoDuro(request.getDiscoDuro());
+            response.setEstadoPrestamo(request.getEstadoPrestamo());
             return response;
         }).collect(Collectors.toList());
     }
@@ -87,6 +105,7 @@ public class ComputoService {
             response.setNumero(request.getNumero());
             response.setRam(request.getRam());
             response.setDiscoDuro(request.getDiscoDuro());
+            response.setEstadoPrestamo(request.getEstadoPrestamo());
             return response;
         }).collect(Collectors.toList());
     }
@@ -102,9 +121,10 @@ public class ComputoService {
             response.setNumero(optional.get().getNumero());
             response.setRam(optional.get().getRam());
             response.setDiscoDuro(optional.get().getDiscoDuro());
+            response.setEstadoPrestamo(optional.get().getEstadoPrestamo());
             return response;
         }else{
-            throw new BadRequestException("No existe un comutador con número " +numero);
+            throw new BadRequestException("No existe un computador con número " +numero);
         }
     }
 
@@ -118,6 +138,7 @@ public class ComputoService {
             response.setNumero(optional.get().getNumero());
             response.setRam(optional.get().getRam());
             response.setDiscoDuro(optional.get().getDiscoDuro());
+            response.setEstadoPrestamo(optional.get().getEstadoPrestamo());
             return response;
         }else{
             throw new BadRequestException("No existe un comutador con id " +id);

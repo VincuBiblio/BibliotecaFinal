@@ -19,4 +19,6 @@ public class InventarioResponse implements Serializable {
     private String procesador;
 
     private Boolean estado;
+
+    private Boolean estadoPrestamo;
 }
