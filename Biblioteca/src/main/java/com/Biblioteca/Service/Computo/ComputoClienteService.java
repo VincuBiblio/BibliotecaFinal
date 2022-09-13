@@ -83,7 +83,7 @@ public class ComputoClienteService {
             ComputoClienteResponse response = new ComputoClienteResponse();
             Optional<Cliente> cliente = clienteRepository.findById(computoCliente.getCliente().getId());
             if (cliente.isPresent()) {
-                Optional<Persona> persona = personaRepository.findById(cliente.get().getId());
+                Optional<Persona> persona = personaRepository.findById(cliente.get().getPersona().getId());
                 if(persona.isPresent()){
                         Optional<InventarioComputo> inventarioComputo = inventarioComputoRepository.findById(computoCliente.getInventario().getId());
                         if(inventarioComputo.isPresent()){
@@ -168,12 +168,12 @@ public class ComputoClienteService {
     }
     @Transactional
     public List<ComputoClienteResponse> listAllPrestamosHoraFin(){
-        List<ComputoCliente> listaCC= computoClienteRepository.findAllByHoraFin(null+"");
+        List<ComputoCliente> listaCC= computoClienteRepository.findAllByHoraFin("["+null+"]");
         return listaCC.stream().map(computoCliente -> {
             ComputoClienteResponse response = new ComputoClienteResponse();
             Optional<Cliente> cliente = clienteRepository.findById(computoCliente.getCliente().getId());
             if (cliente.isPresent()) {
-                Optional<Persona> persona = personaRepository.findById(cliente.get().getId());
+                Optional<Persona> persona = personaRepository.findById(cliente.get().getPersona().getId());
                 if(persona.isPresent()){
                     Optional<InventarioComputo> inventarioComputo = inventarioComputoRepository.findById(computoCliente.getInventario().getId());
                     if(inventarioComputo.isPresent()){
