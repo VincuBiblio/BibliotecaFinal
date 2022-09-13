@@ -168,7 +168,7 @@ public class ComputoClienteService {
     }
     @Transactional
     public List<ComputoClienteResponse> listAllPrestamosHoraFin(){
-        List<ComputoCliente> listaCC= computoClienteRepository.findAllByHoraFin("["+null+"]");
+        List<ComputoCliente> listaCC= computoClienteRepository.findAllByHoraFin("0");
         return listaCC.stream().map(computoCliente -> {
             ComputoClienteResponse response = new ComputoClienteResponse();
             Optional<Cliente> cliente = clienteRepository.findById(computoCliente.getCliente().getId());
