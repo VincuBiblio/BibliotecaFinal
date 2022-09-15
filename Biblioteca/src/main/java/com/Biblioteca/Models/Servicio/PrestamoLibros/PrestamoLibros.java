@@ -23,6 +23,12 @@ public class PrestamoLibros implements Serializable {
 
     private String codigoLibro;
 
+    private String nombre;
+
+    private  String autor;
+
+    private String isbn;
+
     private Boolean estado;
 
 
