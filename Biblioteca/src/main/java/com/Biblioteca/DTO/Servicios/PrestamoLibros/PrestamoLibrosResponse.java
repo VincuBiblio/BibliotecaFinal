@@ -13,6 +13,12 @@ public class PrestamoLibrosResponse implements Serializable {
 
     private Boolean estado;
 
+    private String nombre;
+
+    private  String autor;
+
+    private String isbn;
+
     public PrestamoLibrosResponse(Long id, String codigoLibro, Boolean estado) {
         this.id = id;
         this.codigoLibro = codigoLibro;

@@ -48,9 +48,7 @@ public class LibrosService {
         Optional<PrestamoLibros> optional = prestamoLibrosRepository.findById(request.getId());
         if (optional.isPresent()) {
             optional.get().setEstado(request.getEstado());
-            optional.get().setAutor(request.getAutor());
-            optional.get().setNombre(request.getNombre());
-            optional.get().setIsbn(request.getIsbn());
+
 
             try {
                 prestamoLibrosRepository.save(optional.get());
@@ -69,6 +67,10 @@ public class LibrosService {
         if (optional.isPresent()) {
             optional.get().setCodigoLibro(request.getCodigoLibro());
             optional.get().setEstado(request.getEstado());
+            optional.get().setAutor(request.getAutor());
+            optional.get().setNombre(request.getNombre());
+            optional.get().setIsbn(request.getIsbn());
+
             try {
                 prestamoLibrosRepository.save(optional.get());
                 return true;
@@ -88,6 +90,9 @@ public class LibrosService {
             response.setId(libro.getId());
             response.setCodigoLibro(libro.getCodigoLibro());
             response.setEstado(libro.getEstado());
+            response.setAutor(libro.getAutor());
+            response.setNombre(libro.getNombre());
+            response.setIsbn(libro.getIsbn());
             return response;
         }).collect(Collectors.toList());
     }
