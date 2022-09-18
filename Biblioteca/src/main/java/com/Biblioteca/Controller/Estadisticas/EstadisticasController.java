@@ -62,6 +62,5 @@ public class EstadisticasController {
     public ResponseEntity<List<DatosEstadicticasMesAnio>> listAllLClientesMesAndAnioComputo(@PathVariable Long mes, @PathVariable Long  anio){
         List<DatosEstadicticasMesAnio> lista = computoClienteService.listaClientesLibroMesANio(mes, anio);
         return new ResponseEntity<>(lista, HttpStatus.OK);
-
     }
 }
