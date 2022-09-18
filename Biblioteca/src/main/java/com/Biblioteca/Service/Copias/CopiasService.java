@@ -20,6 +20,7 @@ import com.Biblioteca.Models.Servicio.CopiasImpresiones.CopiasImpresiones;
 import com.Biblioteca.Repository.CopiasImpresiones.CopiasClientesRepository;
 import com.Biblioteca.Repository.CopiasImpresiones.CopiasImpresionesRepository;
 import com.Biblioteca.Repository.Persona.ClienteRepository;
+import com.Biblioteca.Repository.Persona.DatosEstadicticasMesAnio;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
@@ -302,6 +303,11 @@ public class CopiasService {
         Double pct= (double)(cantidad*100)/total;
         return Math.round(pct*100)/100.0;
 
+    }
+
+    @Transactional
+    public List<DatosEstadicticasMesAnio> listaClientesLibroMesANio(Long mes, Long anio){
+        return copiasClientesRepository.findAllByMesandAnio(mes, anio);
     }
 
     @Transactional

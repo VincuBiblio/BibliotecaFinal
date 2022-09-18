@@ -14,6 +14,7 @@ import com.Biblioteca.Models.Servicio.CentroComputo.InventarioComputo;
 import com.Biblioteca.Repository.Computo.ComputoClienteRepository;
 import com.Biblioteca.Repository.Computo.InventarioComputoRepository;
 import com.Biblioteca.Repository.Persona.ClienteRepository;
+import com.Biblioteca.Repository.Persona.DatosEstadicticasMesAnio;
 import com.Biblioteca.Repository.Persona.PersonaRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -150,6 +151,10 @@ public class ComputoClienteService {
         }
     }
 
+    @Transactional
+    public List<DatosEstadicticasMesAnio> listaClientesLibroMesANio(Long mes, Long anio){
+        return computoClienteRepository.findAllByMesandAnio(mes, anio);
+    }
 
     @Transactional
     public boolean updateComputoCliente(ComputoClienteHoraFinRequest request){

@@ -12,6 +12,7 @@ import com.Biblioteca.Repository.Libros.LibroClienteRepository;
 import com.Biblioteca.Repository.Libros.ListaLibrosPrestamo;
 import com.Biblioteca.Repository.Libros.PrestamoLibrosRepository;
 import com.Biblioteca.Repository.Persona.ClienteRepository;
+import com.Biblioteca.Repository.Persona.DatosEstadicticasMesAnio;
 import com.Biblioteca.Repository.Persona.PersonaRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,6 +107,11 @@ public class LibrosClientesService {
     @Transactional
     public List<ListaLibrosPrestamo> listaLbrosEnPrestamo(){
         return libroClienteRepository.findAllByEstado(false);
+    }
+
+    @Transactional
+    public List<DatosEstadicticasMesAnio> listaClientesLibroMesANio(Long mes, Long anio){
+        return libroClienteRepository.findAllByMesAndAnio(mes, anio);
     }
 
 
