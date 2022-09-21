@@ -131,6 +131,9 @@ public class LibrosService {
             response.setId(libro.getId());
             response.setCodigoLibro(libro.getCodigoLibro());
             response.setEstado(libro.getEstado());
+            response.setAutor(libro.getAutor());
+            response.setNombre(libro.getNombre());
+            response.setIsbn(libro.getIsbn());
             return response;
         }).collect(Collectors.toList());
     }
