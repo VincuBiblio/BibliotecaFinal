@@ -1,12 +1,7 @@
 package com.Biblioteca.Service;
 
-import com.Biblioteca.DTO.CursoTaller.TallerResponse;
-import com.Biblioteca.DTO.Persona.PersonaClienteResponse;
 import com.Biblioteca.DTO.Reporte.Reportesd;
-import com.Biblioteca.Exceptions.BadRequestException;
-import com.Biblioteca.Models.CursoTaller.Taller.Taller;
 import com.Biblioteca.Models.Persona.Cliente;
-import com.Biblioteca.Models.Servicio.CopiasImpresiones.CopiasCliente;
 import com.Biblioteca.Repository.CopiasImpresiones.CopiasClientesRepository;
 import com.Biblioteca.Repository.CursoTaller.TallerRepository;
 import com.Biblioteca.Repository.Persona.ClienteRepository;
@@ -18,8 +13,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -80,6 +75,17 @@ public class ReporteService {
         nativeQuery.setParameter(1, idtaller);
         return (String) nativeQuery.getSingleResult();
     }
+    public Date buscarfechatallerinicio(Long idtaller) {
+        Query nativeQuery = entityManager.createNativeQuery("SELECT DISTINCT ct.fecha_inicio FROM curso_taller ct join taller t on t.curso_taller_id=ct.id where t.id=?");
+        nativeQuery.setParameter(1, idtaller);
+        return (Date) nativeQuery.getSingleResult();
+    }
+    public Date buscarfechatallerfin(Long idtaller) {
+        Query nativeQuery = entityManager.createNativeQuery("SELECT DISTINCT ct.fecha_fin FROM curso_taller ct join taller t on t.curso_taller_id=ct.id where t.id=?");
+        nativeQuery.setParameter(1, idtaller);
+        return (Date) nativeQuery.getSingleResult();
+    }
+
 
     public List<Reportesd> listAllbymes(Long mes, Long anio){
 
@@ -110,7 +116,8 @@ public class ReporteService {
                 if(contarclienteencopias(clienteRequest.getId(),mes,anio)!=null){
                     BigInteger varnro;
                    varnro=contarclienteencopias(clienteRequest.getId(),mes,anio);
-                   pcr.setCopias(varnro.longValue());
+                   pcr.setCopias(varnro.longValue()); 
+
                 }else{
                     pcr.setCopias(null);
                 }
@@ -142,6 +149,13 @@ public class ReporteService {
                                     String nombretaller;
                                     nombretaller=buscarnombretaller(ll.longValue());
                                     pcr.setNombretaller(nombretaller);
+
+                                    Date fecha1,fecha2;
+                                    String fecha;
+                                    fecha1=buscarfechatallerinicio(ll.longValue());
+                                    fecha2=buscarfechatallerfin(ll.longValue());
+                                    fecha= String.valueOf(fecha1)+" y "+String.valueOf(fecha2);
+                                    pcr.setFecha(fecha);
                                 }
 
                             }else{
