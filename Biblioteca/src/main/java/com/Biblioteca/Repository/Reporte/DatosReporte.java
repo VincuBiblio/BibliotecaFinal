@@ -20,4 +20,17 @@ public interface DatosReporte {
         Long getAnio_prestamo();
         Long getMes_prestamo();
         Long getId();
+
+        Date getFecha_nacimiento();
+        Long getEdad();
+        String getEstado_civil();
+        String getProvincia();
+        String getCanton();
+        String getParroquia();
+        String getBarrio();
+        Boolean getDiscapacidad();
+        String getverificables();
+
+
+
     }
