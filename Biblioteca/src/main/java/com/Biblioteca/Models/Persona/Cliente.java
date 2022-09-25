@@ -6,6 +6,7 @@ import com.Biblioteca.Models.CursoTaller.Taller.Taller;
 import com.Biblioteca.Models.Servicio.CentroComputo.ComputoCliente;
 import com.Biblioteca.Models.Servicio.CopiasImpresiones.CopiasCliente;
 import com.Biblioteca.Models.Servicio.PrestamoLibros.PrestamoLibroCliente;
+import com.Biblioteca.Models.Servicio.ServiciosVarios.ServiciosVariosCliente;
 import com.Biblioteca.Models.Ubicacion.Ubicacion;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -57,6 +58,9 @@ public class Cliente implements Serializable {
 
     @OneToMany (targetEntity = PrestamoLibroCliente.class, mappedBy = "cliente")
     private List<PrestamoLibroCliente> prestamoCliente;
+
+    @OneToMany (targetEntity = ServiciosVariosCliente.class, mappedBy = "cliente")
+    private List<ServiciosVariosCliente> servicioVariosCliente;
 
     @OneToMany (targetEntity = ComputoCliente.class, mappedBy = "cliente")
     private List<ComputoCliente> computoCliente;
