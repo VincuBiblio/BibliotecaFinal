@@ -1,20 +1,18 @@
 package com.Biblioteca.Service;
 
 import com.Biblioteca.DTO.Reporte.Reportesd;
-import com.Biblioteca.Models.Persona.Cliente;
 import com.Biblioteca.Repository.CopiasImpresiones.CopiasClientesRepository;
 import com.Biblioteca.Repository.CursoTaller.TallerRepository;
 import com.Biblioteca.Repository.Persona.ClienteRepository;
+import com.Biblioteca.Repository.Reporte.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import java.math.BigInteger;
-import java.util.Date;
-import java.util.List;
+import javax.transaction.Transactional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -30,144 +28,109 @@ public class ReporteService {
     @Autowired
     private CopiasClientesRepository copiasClientesRepository;
 
+    @Autowired
+    private ReporteRepository reporteRepository;
+    @Autowired
+    private ReportecomputoRepository reportecomputoRepository;
+    @Autowired
+    private ReporteLibroRepository reportelibroRepository;
+
+    @Autowired
+    private ReporteporTallerRepository reporteporTallerRepository;
 
 
-    public BigInteger contarclienteencopias(Long id, Long mes, Long anio) {
-        Query nativeQuery = entityManager.createNativeQuery("SELECT DISTINCT count(*) FROM copias_cliente cc " +
-                " where cc.id_cliente= ? and cc.mes=? and cc.anio=?");
-        nativeQuery.setParameter(1, id);
-        nativeQuery.setParameter(2, mes);
-        nativeQuery.setParameter(3, anio);
-        return (BigInteger) nativeQuery.getSingleResult();
-    }
-    public BigInteger contarclientelibros(Long id, Long mes, Long anio) {
-        Query nativeQuery = entityManager.createNativeQuery("SELECT DISTINCT count(*) FROM prestamolibros_cliente pl " +
-                " where pl.id_cliente= ? and pl.mes_prestamo=? and pl.anio_prestamo=?");
-        nativeQuery.setParameter(1, id);
-        nativeQuery.setParameter(2, mes);
-        nativeQuery.setParameter(3, anio);
-        return (BigInteger) nativeQuery.getSingleResult();
-    }
-    public BigInteger contarclientecomputo(Long id, Long mes, Long anio) {
-        Query nativeQuery = entityManager.createNativeQuery("SELECT DISTINCT count(*) FROM computo_cliente ccl " +
-                " where ccl.id_cliente= ? and ccl.mes=? and ccl.anio=?");
-        nativeQuery.setParameter(1, id);
-        nativeQuery.setParameter(2, mes);
-        nativeQuery.setParameter(3, anio);
-        return (BigInteger) nativeQuery.getSingleResult();
-    }
-    public BigInteger buscarclientectaller(Long id) {
-        Query nativeQuery = entityManager.createNativeQuery("SELECT DISTINCT count(*) FROM taller_clientes tcl " +
-                " where tcl.cliente_id= ?");
-        nativeQuery.setParameter(1, id);
-        return (BigInteger) nativeQuery.getSingleResult();
-    }
 
-    public BigInteger buscaridtaller(Long id) {
-        Query nativeQuery = entityManager.createNativeQuery("SELECT ct.taller_id FROM taller_clientes ct" +
-                " where ct.cliente_id= ?");
-        nativeQuery.setParameter(1, id);
-        return (BigInteger) nativeQuery.getSingleResult();
-    }
+    @Transactional
+    public List<Reportesd> listarbycopias(Long mes, Long anio) {
+        List<DatosReporte> datos1=reporteRepository.findAllByMesandAnio(mes, anio);
+        return datos1.stream().map(clienteRequest -> {
+            Reportesd listaa=new Reportesd();
+            listaa.setCedula(clienteRequest.getCedula());
+            listaa.setNombres(clienteRequest.getNombres());
+            listaa.setApellidos(clienteRequest.getApellidos());
+            listaa.setGenero(clienteRequest.getGenero());
+            Formatter fmt = new Formatter();
+            Formatter fmt2 = new Formatter();
+            listaa.setFecha(clienteRequest.getAnio()+"-"+fmt.format("%02d",clienteRequest.getMes())+"-"+fmt2.format("%02d",clienteRequest.getDia()));
 
-    public String buscarnombretaller(Long idtaller) {
-        Query nativeQuery = entityManager.createNativeQuery("SELECT DISTINCT ct.nombre FROM curso_taller ct join taller t on t.curso_taller_id=ct.id where t.id=?");
-        nativeQuery.setParameter(1, idtaller);
-        return (String) nativeQuery.getSingleResult();
+            listaa.setCopias(Long.valueOf(1));
+            return listaa;
+        }).collect(Collectors.toList());
     }
-    public Date buscarfechatallerinicio(Long idtaller) {
-        Query nativeQuery = entityManager.createNativeQuery("SELECT DISTINCT ct.fecha_inicio FROM curso_taller ct join taller t on t.curso_taller_id=ct.id where t.id=?");
-        nativeQuery.setParameter(1, idtaller);
-        return (Date) nativeQuery.getSingleResult();
-    }
-    public Date buscarfechatallerfin(Long idtaller) {
-        Query nativeQuery = entityManager.createNativeQuery("SELECT DISTINCT ct.fecha_fin FROM curso_taller ct join taller t on t.curso_taller_id=ct.id where t.id=?");
-        nativeQuery.setParameter(1, idtaller);
-        return (Date) nativeQuery.getSingleResult();
+    @Transactional
+    public List<Reportesd> listarbycomputo(Long mes, Long anio) {
+        List<DatosReporte> datos2 = reportecomputoRepository.findAllByMesandAnio(mes, anio);
+        return datos2.stream().map(clienteRequest2 -> {
+            Reportesd listab = new Reportesd();
+            Formatter fmt = new Formatter();
+            Formatter fmt2 = new Formatter();
+            listab.setFecha(clienteRequest2.getAnio()+"-"+fmt.format("%02d",clienteRequest2.getMes())+"-"+fmt2.format("%02d",clienteRequest2.getDia()));
+            listab.setCedula(clienteRequest2.getCedula());
+            listab.setNombres(clienteRequest2.getNombres());
+            listab.setApellidos(clienteRequest2.getApellidos());
+            listab.setGenero(clienteRequest2.getGenero());
+            listab.setComputo(Long.valueOf(1));
+            return listab;
+        }).collect(Collectors.toList());
     }
 
+    @Transactional
+    public List<Reportesd> listarbyprestamolibros(Long mes, Long anio) {
+        List<DatosReporte> datos3 = reportelibroRepository.findAllByMesandAnio(mes, anio);
+        return datos3.stream().map(clienteRequest3 -> {
+            Reportesd listac = new Reportesd();
+            listac.setCedula(clienteRequest3.getCedula());
+            listac.setNombres(clienteRequest3.getNombres());
+            listac.setApellidos(clienteRequest3.getApellidos());
+            listac.setGenero(clienteRequest3.getGenero());
+            listac.setEmail(clienteRequest3.getEmail());
+            listac.setTelefono(clienteRequest3.getTelefono());
+            Formatter fmt = new Formatter();
+            Formatter fmt2 = new Formatter();
+            listac.setFecha(clienteRequest3.getAnio_prestamo()+"-"+fmt.format("%02d",clienteRequest3.getMes_prestamo())+"-"+fmt2.format("%02d",clienteRequest3.getDia_prestamo()));
+            listac.setRepositorio(Long.valueOf(1));
+            return listac;
+        }).collect(Collectors.toList());
+    }
 
-    public List<Reportesd> listAllbymes(Long mes, Long anio){
 
-        List<Cliente> cliente = clienteRepository.findAll();
-        return cliente.stream().map(clienteRequest->{
-            Reportesd pcr = new Reportesd();
-            String codig="B.M. EL VALLE";
-            String verificables="Incluido en el informe mensual";
-            pcr.setCodigo(codig);
-            pcr.setVerificables(verificables);
 
-            pcr.setIdcliente(clienteRequest.getId());
-            pcr.setCedula(clienteRequest.getPersona().getCedula());
-            pcr.setNombres(clienteRequest.getPersona().getNombres());
-            pcr.setApellidos(clienteRequest.getPersona().getApellidos());
-            pcr.setFechaNacimiento(clienteRequest.getFechaNacimiento());
-            pcr.setEdad(clienteRequest.getEdad());
-            pcr.setGenero(clienteRequest.getGenero());
-            pcr.setTelefono(clienteRequest.getPersona().getTelefono());
-            pcr.setEmail(clienteRequest.getPersona().getEmail());
-            pcr.setEstadoCivil(clienteRequest.getEstadoCivil());
-            pcr.setDiscapacidad(clienteRequest.getDiscapacidad());
-            pcr.setBarrio(clienteRequest.getUbicacion().getBarrio().getBarrio());
-            pcr.setParroquia(clienteRequest.getUbicacion().getParroquia().getParroquia());
-            pcr.setCanton(clienteRequest.getUbicacion().getCanton().getCanton());
-            pcr.setProvincia(clienteRequest.getUbicacion().getProvincia().getProvincia());
 
-                if(contarclienteencopias(clienteRequest.getId(),mes,anio)!=null){
-                    BigInteger varnro;
-                   varnro=contarclienteencopias(clienteRequest.getId(),mes,anio);
-                   pcr.setCopias(varnro.longValue()); 
+    @Transactional
+    public List<Reportesd>  listartallerbyClientes(Long mes, Long anio) {
 
-                }else{
-                    pcr.setCopias(null);
-                }
-                    if(contarclientelibros(clienteRequest.getId(),mes, anio)!=null){
-                        BigInteger varnro2;
-                        varnro2=contarclientelibros(clienteRequest.getId(),mes, anio);
-                        pcr.setRepositorio(varnro2.longValue());
-                    }else{
-                        pcr.setRepositorio(null);
-                    }
-                        if(contarclientecomputo(clienteRequest.getId(),mes,anio)!=null){
-                            BigInteger varnro3;
-                            varnro3=contarclientecomputo(clienteRequest.getId(),mes,anio);
-                            pcr.setComputo(varnro3.longValue());
-                        }else{
-                            pcr.setComputo(null);
-                        }
-                            if(buscarclientectaller(clienteRequest.getId())!=null){
-                                BigInteger varnro4;
-                                varnro4=buscarclientectaller(clienteRequest.getId());
-                                pcr.setTalleres(varnro4.longValue());
+        Formatter fmt = new Formatter();
+        fmt.format("%02d",mes);
+        String fec=anio+"-"+fmt;
+        List<DatosReporte> datos4 = reporteporTallerRepository.findAllByFecha_inicio(fec);
+        System.out.println(fec);
+        return datos4.stream().map(clienteRequest4 -> {
+            Reportesd listad = new Reportesd();
+            listad.setNombretaller(clienteRequest4.getNombre());
+            listad.setTalleres(Long.valueOf(1));
+            listad.setFecha(clienteRequest4.getFecha_inicio()+" a "+clienteRequest4.getFecha_fin());
 
-                                if(varnro4.longValue()>0) {
-                                    BigInteger ll;
-                                    ll = buscaridtaller(clienteRequest.getId());
-                                    System.out.println("id taller " + ll.longValue());
-                                    pcr.setIdtaller(ll.longValue());
-
-                                    String nombretaller;
-                                    nombretaller=buscarnombretaller(ll.longValue());
-                                    pcr.setNombretaller(nombretaller);
-
-                                    Date fecha1,fecha2;
-                                    String fecha;
-                                    fecha1=buscarfechatallerinicio(ll.longValue());
-                                    fecha2=buscarfechatallerfin(ll.longValue());
-                                    fecha= String.valueOf(fecha1)+" y "+String.valueOf(fecha2);
-                                    pcr.setFecha(fecha);
-                                }
-
-                            }else{
-                                pcr.setTalleres(null);
-                            }
-
-                        return pcr;
-        }).collect(Collectors.toList()).stream().filter(value->
-                value.getCopias().longValue()!=0 || value.getComputo().longValue()!=0 || value.getRepositorio().longValue()!=0).collect(Collectors.toList());
+            listad.setCedula(clienteRequest4.getCedula());
+            listad.setNombres(clienteRequest4.getNombres());
+            listad.setApellidos(clienteRequest4.getApellidos());
+            listad.setGenero(clienteRequest4.getGenero());
+            return listad;
+        }).collect(Collectors.toList());
 
     }
 
+
+
+    @Transactional
+    public List<Reportesd> listartodo3(Long mes, Long anio) {
+        List<Reportesd> list = new ArrayList<>();
+        list.addAll((Collection<? extends Reportesd>) listarbycopias(mes, anio));
+        list.addAll((Collection<? extends Reportesd>) listarbycomputo(mes, anio));
+        list.addAll((Collection<? extends Reportesd>) listarbyprestamolibros(mes, anio));
+        list.addAll((Collection<? extends Reportesd>) listartallerbyClientes(mes, anio));
+        return list;
+
+    }
 
 
 
