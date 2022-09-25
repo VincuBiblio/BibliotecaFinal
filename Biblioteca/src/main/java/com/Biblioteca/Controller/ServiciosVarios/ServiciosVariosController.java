@@ -1,12 +1,9 @@
 package com.Biblioteca.Controller.ServiciosVarios;
 
-import com.Biblioteca.DTO.Estadisticas.EstadisticasGenero;
-import com.Biblioteca.DTO.Servicios.PrestamoLibros.Clientes.LibrosClientesRequest;
 import com.Biblioteca.DTO.Servicios.ServiciosVarios.Clientes.ServicioVariosClienteRequest;
 import com.Biblioteca.DTO.Servicios.ServiciosVarios.ServiciosVariosRequest;
 import com.Biblioteca.DTO.Servicios.ServiciosVarios.ServiciosVariosResponse;
 import com.Biblioteca.Exceptions.Mensaje;
-import com.Biblioteca.Repository.Persona.DatosEstadicticasMesAnio;
 import com.Biblioteca.Repository.ServiciosVarios.DatosServicioVarioCliente;
 import com.Biblioteca.Service.ServiciosVarios.ServicioVariosService;
 import org.springframework.beans.factory.annotation.Autowired;
