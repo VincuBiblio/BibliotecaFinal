@@ -67,4 +67,7 @@ public class ComputoClienteResponse implements Serializable {
     private Boolean estado;
 
     private Boolean estadoPrestamo;
+
+    private String observacionesComputador;
+
 }

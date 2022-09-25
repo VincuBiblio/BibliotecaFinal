@@ -120,6 +120,7 @@ public class ComputoClienteService {
                             response.setProcesador(i.getProcesador());
                             response.setEstado(i.getEstado());
                             response.setEstadoPrestamo(i.getEstadoPrestamo());
+                            response.setObservacionesComputador(i.getObservacionesComputador());
                             return response;
                         }else{
                             throw new BadRequestException("No existe computador con id " + computoCliente.getInventario().getId());
@@ -215,6 +216,7 @@ public class ComputoClienteService {
                         response.setProcesador(i.getProcesador());
                         response.setEstado(i.getEstado());
                         response.setEstadoPrestamo(i.getEstadoPrestamo());
+                        response.setObservacionesComputador(i.getObservacionesComputador());
                         return response;
                     }else{
                         throw new BadRequestException("No existe computador con id " + computoCliente.getInventario().getId());

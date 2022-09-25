@@ -21,4 +21,7 @@ public class InventarioRequest implements Serializable {
     private Boolean estado;
 
     private Boolean estadoPrestamo;
+
+    private String observacionesComputador;
+
 }

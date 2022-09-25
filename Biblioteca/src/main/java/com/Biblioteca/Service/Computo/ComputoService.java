@@ -33,6 +33,7 @@ public class ComputoService {
             inventarioComputo.setProcesador(request.getProcesador());
             inventarioComputo.setRam(request.getRam());
             inventarioComputo.setEstadoPrestamo(request.getEstadoPrestamo());
+            inventarioComputo.setObservacionesComputador(request.getObservacionesComputador());
             try{
                 inventarioComputoRepository.save(inventarioComputo);
                 return true;
@@ -52,6 +53,7 @@ public class ComputoService {
             optional.get().setProcesador(request.getProcesador());
             optional.get().setRam(request.getRam());
             optional.get().setEstadoPrestamo(request.getEstadoPrestamo());
+            optional.get().setObservacionesComputador(request.getObservacionesComputador());
            try{
                inventarioComputoRepository.save(optional.get());
                return true;
@@ -90,6 +92,7 @@ public class ComputoService {
             response.setRam(request.getRam());
             response.setDiscoDuro(request.getDiscoDuro());
             response.setEstadoPrestamo(request.getEstadoPrestamo());
+            response.setObservacionesComputador(request.getObservacionesComputador());
             return response;
         }).collect(Collectors.toList());
     }
@@ -106,6 +109,7 @@ public class ComputoService {
             response.setRam(request.getRam());
             response.setDiscoDuro(request.getDiscoDuro());
             response.setEstadoPrestamo(request.getEstadoPrestamo());
+            response.setObservacionesComputador(request.getObservacionesComputador());
             return response;
         }).collect(Collectors.toList());
     }
@@ -122,6 +126,7 @@ public class ComputoService {
             response.setRam(optional.get().getRam());
             response.setDiscoDuro(optional.get().getDiscoDuro());
             response.setEstadoPrestamo(optional.get().getEstadoPrestamo());
+            response.setObservacionesComputador(optional.get().getObservacionesComputador());
             return response;
         }else{
             throw new BadRequestException("No existe un computador con número " +numero);
@@ -139,6 +144,7 @@ public class ComputoService {
             response.setRam(optional.get().getRam());
             response.setDiscoDuro(optional.get().getDiscoDuro());
             response.setEstadoPrestamo(optional.get().getEstadoPrestamo());
+            response.setObservacionesComputador(optional.get().getObservacionesComputador());
             return response;
         }else{
             throw new BadRequestException("No existe un comutador con id " +id);
