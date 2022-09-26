@@ -175,10 +175,13 @@ public class ReporteService {
         list.addAll((Collection<? extends Reportesd>) listarbycomputo(mes, anio));
         list.addAll((Collection<? extends Reportesd>) listarbyprestamolibros(mes, anio));
         list.addAll((Collection<? extends Reportesd>) listartallerbyClientes(mes, anio));
+        Collections.sort(list, new Comparator<Reportesd>() {
+            @Override
+            public int compare(Reportesd o1, Reportesd o2) {
+                return o1.getFecha().compareTo(o2.getFecha());
+            }
+        });
         return list;
-
     }
-
-
 
 }
