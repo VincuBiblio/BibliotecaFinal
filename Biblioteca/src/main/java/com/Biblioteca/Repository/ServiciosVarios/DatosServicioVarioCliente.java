@@ -2,7 +2,10 @@ package com.Biblioteca.Repository.ServiciosVarios;
 
 public interface DatosServicioVarioCliente {
 
+    Long getId();
     Long getCliente();
+
+    String getCedula();
 
     String getNombres();
 
@@ -11,4 +14,6 @@ public interface DatosServicioVarioCliente {
     String getTelefono();
 
     String getServicio();
+
+    String getObservaciones();
 }
