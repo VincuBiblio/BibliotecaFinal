@@ -23,4 +23,9 @@ public class ReporteController {
         List<Reportesd> lista = reporteService.listartodo3(mes, anio);
         return new ResponseEntity<>(lista, HttpStatus.OK);
     }
+    @GetMapping("/todoslosdatos/{mes}/{anio}")
+    public ResponseEntity<List<Reportesd>> listAllbyMesAndAnio(@PathVariable Long mes, @PathVariable Long  anio){
+        List<Reportesd> lista = reporteService.retornarlista(mes, anio);
+        return new ResponseEntity<>(lista, HttpStatus.OK);
+    }
 }
