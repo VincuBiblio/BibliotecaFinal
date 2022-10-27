@@ -187,7 +187,7 @@ public class PersonaService implements UserDetailsService {
         }
 
         public Long edad (Date fechaNacimiento){
-        Period edadC = Period.between(LocalDate.of(fechaNacimiento.getYear(),fechaNacimiento.getMonth(), fechaNacimiento.getDay()), LocalDate.now());
+        Period edadC = Period.between(LocalDate.of(fechaNacimiento.getYear(),fechaNacimiento.getMonth()+1, fechaNacimiento.getDay()+1), LocalDate.now());
         int años =edadC.getYears()-1900;
         System.out.println("AÑOS"+años);
         return Long.parseLong(años+"");
